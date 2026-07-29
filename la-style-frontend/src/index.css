@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&family=Kameron:wght@400..700&display=swap');
+
+@theme {
+  --color-brand-pink: #EC1E63;
+  --color-brand-purple: #6B21A8;
+  --color-brand-deep: #1E0B36;
+  --color-brand-gold: #F5C542;
+
+  --font-display: "Poppins", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-serif-display: "Kameron", serif;
+}
+
+body {
+  font-family: theme(--font-body);
+}
+
+h1, h2, h3, .font-display {
+  font-family: theme(--font-display);
+}
+
+.font-serif-display {
+  font-family: theme(--font-serif-display);
+  font-optical-sizing: auto;
+  font-style: normal;
+}
