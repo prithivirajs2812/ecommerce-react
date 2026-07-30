@@ -15,17 +15,38 @@ export default function Cart() {
   const [error, setError] = useState('');
   const [updatingItemId, setUpdatingItemId] = useState(null);
 
+  // Effect 1: auth guard only.
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
-      return;
+    }
+  }, [isAuthenticated, navigate]);
+
+  // Effect 2: data fetching — only runs once we know we're authenticated.
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    let ignore = false;
+
+    async function loadCart() {
+      setLoading(true);
+      setError('');
+      try {
+        const res = await getCart();
+        if (!ignore) setCart(res.data);
+      } catch {
+        if (!ignore) setError('Failed to load your cart. Please try again.');
+      } finally {
+        if (!ignore) setLoading(false);
+      }
     }
 
-    getCart()
-      .then((res) => setCart(res.data))
-      .catch(() => setError('Failed to load your cart. Please try again.'))
-      .finally(() => setLoading(false));
-  }, [isAuthenticated, navigate]);
+    loadCart();
+
+    return () => {
+      ignore = true;
+    };
+  }, [isAuthenticated]);
 
   const handleQuantityChange = async (itemId, newQuantity) => {
     setUpdatingItemId(itemId);
@@ -74,21 +95,20 @@ export default function Cart() {
   }
 
   if (error && !cart) {
-  return (
-    <div className="max-w-5xl mx-auto px-6 py-20 text-center">
-      <p className="text-red-500 mb-4">{error}</p>
-      <button
-        onClick={() => window.location.reload()}
-        className="text-brand-pink font-semibold hover:underline"
-      >
-        Try again
-      </button>
-    </div>
-  );
-}
+    return (
+      <div className="max-w-5xl mx-auto px-6 py-20 text-center">
+        <p className="text-red-500 mb-4">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="text-brand-pink font-semibold hover:underline"
+        >
+          Try again
+        </button>
+      </div>
+    );
+  }
 
-const isEmpty = !cart || cart.items.length === 0;
-
+  const isEmpty = !cart || cart.items.length === 0;
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">

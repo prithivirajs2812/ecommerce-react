@@ -23,18 +23,31 @@ export default function Checkout() {
   const [error, setError] = useState('');
   const [placingOrder, setPlacingOrder] = useState(false);
 
+  // Effect 1: auth guard only.
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
-      return;
     }
+  }, [isAuthenticated, navigate]);
 
-    Promise.all([getCart(), getMyAddresses()])
-      .then(([cartRes, addressRes]) => {
+  // Effect 2: load cart + addresses — only once we know we're authenticated.
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    let ignore = false;
+
+    async function loadCheckoutData() {
+      setLoading(true);
+      setError('');
+      try {
+        const [cartRes, addressRes] = await Promise.all([getCart(), getMyAddresses()]);
+        if (ignore) return;
+
         if (cartRes.data.items.length === 0) {
           navigate('/cart');
           return;
         }
+
         setCart(cartRes.data);
         setAddresses(addressRes.data);
         if (addressRes.data.length > 0) {
@@ -42,9 +55,18 @@ export default function Checkout() {
         } else {
           setShowNewAddressForm(true);
         }
-      })
-      .catch(() => setError('Failed to load checkout details. Please try again.'))
-      .finally(() => setLoading(false));
+      } catch {
+        if (!ignore) setError('Failed to load checkout details. Please try again.');
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    }
+
+    loadCheckoutData();
+
+    return () => {
+      ignore = true;
+    };
   }, [isAuthenticated, navigate]);
 
   const handleSaveAddress = async (addressData) => {

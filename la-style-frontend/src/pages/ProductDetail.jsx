@@ -20,14 +20,28 @@ function ProductDetail() {
   const [adding, setAdding] = useState(false);
 
   useEffect(() => {
-    getProductById(id)
-      .then((res) => setProduct(res.data))
-      .catch((err) => {
-        if (err.response?.status === 404) {
+    let ignore = false;
+
+    async function loadProduct() {
+      setLoading(true);
+      setNotFound(false);
+      try {
+        const res = await getProductById(id);
+        if (!ignore) setProduct(res.data);
+      } catch (err) {
+        if (!ignore && err.response?.status === 404) {
           setNotFound(true);
         }
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    }
+
+    loadProduct();
+
+    return () => {
+      ignore = true;
+    };
   }, [id]);
 
   const handleAddToCart = async () => {
