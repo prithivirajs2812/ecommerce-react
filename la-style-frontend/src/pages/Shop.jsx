@@ -88,7 +88,7 @@ export default function Shop() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
+    <div className=" max-w-7xl mx-auto px-6 py-10">
       <h1 className="font-display font-[800] text-3xl text-brand-deep mb-8">Shop</h1>
 
       <div className="flex flex-col md:flex-row gap-8">

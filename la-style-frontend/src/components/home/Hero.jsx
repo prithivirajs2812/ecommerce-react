@@ -1,7 +1,9 @@
 // src/components/home/Hero.jsx
 import heroImage from '../../assets/hero.png';
+import { Link } from 'react-router-dom';
 
 export default function Hero() {
+
   return (
     <>
       <section
@@ -20,9 +22,9 @@ export default function Hero() {
               Shop the latest trends in fashion.
             </p>
             <div className="flex gap-4">
-              <button className="bg-brand-pink hover:bg-pink-600 transition-colors text-white font-semibold px-6 py-3 rounded-lg shadow-lg">
+             <Link to="/shop"><button className="bg-brand-pink hover:bg-pink-600 transition-colors text-white font-semibold px-6 py-3 rounded-lg shadow-lg">
                 Shop Now
-              </button>
+              </button></Link>
               <button className="bg-white/10 border border-white/40 hover:bg-white/20 transition-colors text-white font-semibold px-6 py-3 rounded-lg backdrop-blur-sm">
                 Explore Deals
               </button>

@@ -22,6 +22,7 @@ export default function Navbar() {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const roles = useAuthStore((state) => state.roles);
 
   // Close the dropdown when clicking anywhere outside it
   useEffect(() => {
@@ -107,6 +108,24 @@ export default function Navbar() {
                   >
                     My Wishlist
                   </Link>
+                  {roles.includes('ROLE_SELLER') && (
+  <Link
+    to="/seller/dashboard"
+    onClick={() => setMenuOpen(false)}
+    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+  >
+    Seller Dashboard
+  </Link>
+)}
+{roles.includes('ROLE_ADMIN') && (
+  <Link
+    to="/admin"
+    onClick={() => setMenuOpen(false)}
+    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+  >
+    Admin Panel
+  </Link>
+)}
                   <hr className="my-1 border-gray-100" />
                   <button
                     onClick={handleLogout}

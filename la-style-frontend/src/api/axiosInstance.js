@@ -1,5 +1,6 @@
 // src/api/axiosInstance.js
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { API_BASE_URL } from '../config/env';
 
 const axiosInstance = axios.create({
@@ -9,8 +10,6 @@ const axiosInstance = axios.create({
   },
 });
 
-// --- helpers for reading/writing the zustand-persisted auth state directly ---
-// (kept out of the store itself so this file has no React/zustand dependency)
 const AUTH_STORAGE_KEY = 'auth';
 
 function readAuthState() {
@@ -24,6 +23,15 @@ function readAuthState() {
   }
 }
 
+function extractRoles(accessToken) {
+  try {
+    const decoded = jwtDecode(accessToken);
+    return decoded.roles || [];
+  } catch {
+    return [];
+  }
+}
+
 function writeTokens({ accessToken, refreshToken }) {
   const stored = localStorage.getItem(AUTH_STORAGE_KEY);
   if (!stored) return;
@@ -32,6 +40,7 @@ function writeTokens({ accessToken, refreshToken }) {
     ...parsed.state,
     accessToken,
     refreshToken: refreshToken ?? parsed.state.refreshToken,
+    roles: extractRoles(accessToken),
   };
   localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(parsed));
 }
@@ -41,7 +50,6 @@ function clearAuthAndRedirect() {
   window.location.href = '/login';
 }
 
-// --- request interceptor: attach current access token ---
 axiosInstance.interceptors.request.use((config) => {
   const state = readAuthState();
   if (state?.accessToken) {
@@ -50,7 +58,6 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-// --- refresh coordination: only one refresh call in flight at a time ---
 let isRefreshing = false;
 let refreshWaiters = [];
 
@@ -74,8 +81,6 @@ axiosInstance.interceptors.response.use(
       originalRequest?.url?.includes('/auth/refresh');
 
     if (response?.status !== 401 || isAuthEndpoint || originalRequest._retry) {
-      // Not a recoverable 401, or we've already retried this request once,
-      // or it's the refresh/login call itself failing — give up.
       if (response?.status === 401) {
         clearAuthAndRedirect();
       }
@@ -91,7 +96,6 @@ axiosInstance.interceptors.response.use(
     originalRequest._retry = true;
 
     if (isRefreshing) {
-      // A refresh is already in flight — wait for it instead of firing another.
       return new Promise((resolve, reject) => {
         subscribeToRefresh((newAccessToken) => {
           if (!newAccessToken) {
@@ -107,8 +111,6 @@ axiosInstance.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      // Use a bare axios call (not axiosInstance) to avoid re-triggering
-      // these same interceptors on the refresh request itself.
       const { data } = await axios.post(`${API_BASE_URL}/auth/refresh`, {
         refreshToken: state.refreshToken,
       });

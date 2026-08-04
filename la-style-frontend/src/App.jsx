@@ -6,6 +6,7 @@ import routeConfig from './routes/routeConfig';
 
 function App() {
   return (
+    <div className='bg-fuchsia-50'>
     <BrowserRouter>
       <Navbar />
       <Routes>
@@ -15,6 +16,7 @@ function App() {
       </Routes>
       <Footer />
     </BrowserRouter>
+    </div>
   );
 }
 

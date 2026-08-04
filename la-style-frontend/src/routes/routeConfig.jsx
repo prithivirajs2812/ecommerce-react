@@ -8,6 +8,16 @@ import Cart from '../pages/Cart';
 import Checkout from '../pages/Checkout';
 import Orders from '../pages/Orders';
 import OrderDetail from '../pages/OrderDetail';
+import Profile from '../pages/Profile';
+import Wishlist from '../pages/Wishlist';
+import BecomeSeller from '../pages/BecomeSeller';
+import SellerDashboard from '../pages/SellerDashboard';
+import MyProducts from '../pages/MyProducts';
+import AdminOverview from '../pages/admin/AdminOverview';
+import AdminUsers from '../pages/admin/AdminUsers';
+import AdminSellers from '../pages/admin/AdminSellers';
+import AdminCoupons from '../pages/admin/AdminCoupons';
+import SellerOrders from '../pages/SellerOrders';
 
 const routeConfig = [
   { path: '/', element: <Home /> },
@@ -19,6 +29,16 @@ const routeConfig = [
   { path: '/checkout', element: <Checkout /> },
   { path: '/orders', element: <Orders /> },
   { path: '/orders/:id', element: <OrderDetail /> },
+  { path: '/profile', element: <Profile /> },
+  { path: '/wishlist', element: <Wishlist /> },
+  { path: '/become-seller', element: <BecomeSeller /> },
+  { path: '/seller/dashboard', element: <SellerDashboard /> },
+  { path: '/seller/products', element: <MyProducts /> },
+  { path: '/admin', element: <AdminOverview /> },
+  { path: '/admin/users', element: <AdminUsers /> },
+  { path: '/admin/sellers', element: <AdminSellers /> },
+  { path: '/admin/coupons', element: <AdminCoupons /> },
+  { path: '/seller/orders', element: <SellerOrders /> }
 ];
 
 export default routeConfig;

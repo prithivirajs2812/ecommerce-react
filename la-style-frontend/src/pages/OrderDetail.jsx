@@ -4,13 +4,16 @@ import { useParams, useLocation, useNavigate, Link } from 'react-router-dom';
 import { getOrderById } from '../api/orderApi';
 import useAuthStore from '../store/useAuthStore';
 import OrderStatusBadge from '../components/order/OrderStatusBadge';
+import OrderStatusUpdater from '../components/order/OrderStatusUpdater';
 
 export default function OrderDetail() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const accessToken = useAuthStore((state) => state.accessToken);
+  const roles = useAuthStore((state) => state.roles) || [];
   const isAuthenticated = !!accessToken;
+  const canManageStatus = roles.includes('ROLE_ADMIN') || roles.includes('ROLE_SELLER');
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -146,21 +149,27 @@ export default function OrderDetail() {
           ))}
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-6 h-fit space-y-4">
-          <div>
-            <h2 className="font-semibold text-gray-800 mb-2">Payment</h2>
-            <p className="text-sm text-gray-600">
-              Method: <span className="font-medium">{order.paymentMethod}</span>
-            </p>
-            <p className="text-sm text-gray-600">
-              Status: <span className="font-medium">{order.paymentStatus}</span>
-            </p>
+        <div className="space-y-6">
+          <div className="bg-white rounded-2xl shadow-sm p-6 h-fit space-y-4">
+            <div>
+              <h2 className="font-semibold text-gray-800 mb-2">Payment</h2>
+              <p className="text-sm text-gray-600">
+                Method: <span className="font-medium">{order.paymentMethod}</span>
+              </p>
+              <p className="text-sm text-gray-600">
+                Status: <span className="font-medium">{order.paymentStatus}</span>
+              </p>
+            </div>
+
+            <div className="border-t border-gray-100 pt-4 flex justify-between font-[700] text-brand-deep">
+              <span>Total</span>
+              <span>₹{order.totalAmount}</span>
+            </div>
           </div>
 
-          <div className="border-t border-gray-100 pt-4 flex justify-between font-[700] text-brand-deep">
-            <span>Total</span>
-            <span>₹{order.totalAmount}</span>
-          </div>
+          {canManageStatus && (
+            <OrderStatusUpdater order={order} onStatusChanged={setOrder} />
+          )}
         </div>
       </div>
 
