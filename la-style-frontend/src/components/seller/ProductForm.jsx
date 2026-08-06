@@ -1,5 +1,5 @@
 // src/components/seller/ProductForm.jsx
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function ProductForm({ initialValue, categories, onSubmit, onCancel, submitting }) {
   const [form, setForm] = useState({
@@ -12,12 +12,9 @@ export default function ProductForm({ initialValue, categories, onSubmit, onCanc
   });
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (categories.length > 0 && !form.categoryId) {
-      setForm((prev) => ({ ...prev, categoryId: categories[0].id }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categories]);
+  // Derived, not stored: falls back to the first category once categories
+  // have loaded, without ever needing an effect to push a default into state.
+  const effectiveCategoryId = form.categoryId || categories[0]?.id || '';
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -30,7 +27,7 @@ export default function ProductForm({ initialValue, categories, onSubmit, onCanc
         ...form,
         price: parseFloat(form.price),
         stock: parseInt(form.stock, 10),
-        categoryId: Number(form.categoryId),
+        categoryId: Number(effectiveCategoryId),
       });
     } catch (err) {
       const validationErrors = err.response?.data?.validationErrors;
@@ -107,7 +104,7 @@ export default function ProductForm({ initialValue, categories, onSubmit, onCanc
         <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
         <select
           name="categoryId"
-          value={form.categoryId}
+          value={effectiveCategoryId}
           onChange={handleChange}
           required
           className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink bg-white"
