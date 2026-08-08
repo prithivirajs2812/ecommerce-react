@@ -80,12 +80,12 @@ axiosInstance.interceptors.response.use(
       originalRequest?.url?.includes('/auth/register') ||
       originalRequest?.url?.includes('/auth/refresh');
 
-    if (response?.status !== 401 || isAuthEndpoint || originalRequest._retry) {
-      if (response?.status === 401) {
-        clearAuthAndRedirect();
-      }
-      return Promise.reject(error);
-    }
+if (response?.status !== 401 || isAuthEndpoint || originalRequest._retry) {
+  if (response?.status === 401 && !isAuthEndpoint) {
+    clearAuthAndRedirect();
+  }
+  return Promise.reject(error);
+}
 
     const state = readAuthState();
     if (!state?.refreshToken) {

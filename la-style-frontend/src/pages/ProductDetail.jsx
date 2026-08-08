@@ -285,8 +285,17 @@ function ProductDetail() {
             </button>
           </div>
 
-          <p className="text-2xl font-[700] text-brand-pink mb-4 mt-4">₹{product.price}</p>
-          <p className="text-gray-600 leading-relaxed mb-6">{product.description}</p>
+<div className="flex items-center gap-3 mb-4 mt-4">
+  <p className="text-2xl font-[700] text-brand-pink">₹{product.effectivePrice}</p>
+  {product.discountPercent > 0 && (
+    <>
+      <p className="text-lg text-gray-400 line-through">₹{product.price}</p>
+      <span className="bg-brand-pink text-white text-xs font-bold px-2.5 py-1 rounded-full">
+        {product.discountPercent}% OFF
+      </span>
+    </>
+  )}
+</div>          <p className="text-gray-600 leading-relaxed mb-6">{product.description}</p>
 
           <p className="text-sm mb-6">
             {product.stock > 0 ? (

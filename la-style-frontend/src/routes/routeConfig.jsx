@@ -18,6 +18,10 @@ import AdminUsers from '../pages/admin/AdminUsers';
 import AdminSellers from '../pages/admin/AdminSellers';
 import AdminCoupons from '../pages/admin/AdminCoupons';
 import SellerOrders from '../pages/SellerOrders';
+import Deals from '../pages/Deals';
+import SearchResults from '../pages/SearchResults';
+import About from '../pages/About';
+import Contact from '../pages/Contact';
 
 const routeConfig = [
   { path: '/', element: <Home /> },
@@ -38,6 +42,10 @@ const routeConfig = [
   { path: '/admin/users', element: <AdminUsers /> },
   { path: '/admin/sellers', element: <AdminSellers /> },
   { path: '/admin/coupons', element: <AdminCoupons /> },
+  { path: '/deals', element: <Deals /> },
+{ path: '/search', element: <SearchResults /> },
+{ path: '/about', element: <About /> },
+{ path: '/contact', element: <Contact /> },
   { path: '/seller/orders', element: <SellerOrders /> }
 ];
 

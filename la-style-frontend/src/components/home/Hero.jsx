@@ -1,16 +1,16 @@
-// src/components/home/Hero.jsx
+// src/components/home/Hero.jsx — only the button section changes
+import { useNavigate } from 'react-router-dom';
 import heroImage from '../../assets/hero.png';
-import { Link } from 'react-router-dom';
 
 export default function Hero() {
+  const navigate = useNavigate();
 
   return (
     <>
       <section
-  className="relative overflow-hidden bg-cover bg-top md:bg-[center_top_15%]"
-  style={{ backgroundImage: `url(${heroImage})` }}
->
-        {/* Gradient overlay so white text stays readable over the illustration */}
+        className="relative overflow-hidden bg-cover bg-top md:bg-[center_top_15%]"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      >
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(30,11,54,0.92)_0%,rgba(107,33,168,0.75)_40%,rgba(236,30,99,0.25)_100%)]" />
 
         <div className="relative max-w-7xl mx-auto px-6 py-28 md:py-40">
@@ -22,10 +22,16 @@ export default function Hero() {
               Shop the latest trends in fashion.
             </p>
             <div className="flex gap-4">
-             <Link to="/shop"><button className="bg-brand-pink hover:bg-pink-600 transition-colors text-white font-semibold px-6 py-3 rounded-lg shadow-lg">
+              <button
+                onClick={() => navigate('/shop')}
+                className="bg-brand-pink hover:bg-pink-600 transition-colors text-white font-semibold px-6 py-3 rounded-lg shadow-lg"
+              >
                 Shop Now
-              </button></Link>
-              <button className="bg-white/10 border border-white/40 hover:bg-white/20 transition-colors text-white font-semibold px-6 py-3 rounded-lg backdrop-blur-sm">
+              </button>
+              <button
+                onClick={() => navigate('/deals')}
+                className="bg-white/10 border border-white/40 hover:bg-white/20 transition-colors text-white font-semibold px-6 py-3 rounded-lg backdrop-blur-sm"
+              >
                 Explore Deals
               </button>
             </div>

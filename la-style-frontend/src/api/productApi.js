@@ -20,3 +20,7 @@ export const deleteProduct = (id) => axiosInstance.delete(PRODUCT_ENDPOINTS.BY_I
 
 export const getMyProducts = (page = 0, size = 20) =>
   axiosInstance.get(`${PRODUCT_ENDPOINTS.MINE}?page=${page}&size=${size}`);
+
+
+export const getDeals = (page = 0, size = 12) =>
+  axiosInstance.get(`${PRODUCT_ENDPOINTS.DEALS}?page=${page}&size=${size}`);

@@ -21,6 +21,7 @@ export default function OrderDetail() {
   const [notFound, setNotFound] = useState(false);
 
   const justPlaced = location.state?.justPlaced;
+const fromSeller = location.state?.from === 'seller';
 
   // Effect 1: auth guard only.
   useEffect(() => {
@@ -173,9 +174,12 @@ export default function OrderDetail() {
         </div>
       </div>
 
-      <Link to="/orders" className="inline-block mt-8 text-sm text-brand-pink font-semibold hover:underline">
-        ← Back to My Orders
-      </Link>
+      <Link
+  to={fromSeller ? '/seller/orders' : '/orders'}
+  className="inline-block mt-8 text-sm text-brand-pink font-semibold hover:underline"
+>
+  ← {fromSeller ? 'Back to Customer Orders' : 'Back to My Orders'}
+</Link>
     </div>
   );
 }

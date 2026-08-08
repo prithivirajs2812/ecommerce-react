@@ -11,12 +11,14 @@ export const USER_ENDPOINTS = {
   PASSWORD: '/users/me/password',
 };
 
+
 export const PRODUCT_ENDPOINTS = {
   ALL: '/products',
   BY_ID: (id) => `/products/${id}`,
   BY_CATEGORY: (categoryId) => `/products/category/${categoryId}`,
   SEARCH: '/products/search',
   MINE: '/products/mine',
+  DEALS: '/products/deals',
 };
 
 export const CATEGORY_ENDPOINTS = {

@@ -2,14 +2,19 @@
 import { useState } from 'react';
 
 export default function ProductForm({ initialValue, categories, onSubmit, onCancel, submitting }) {
-  const [form, setForm] = useState({
-    title: initialValue?.title || '',
-    description: initialValue?.description || '',
-    price: initialValue?.price || '',
-    stock: initialValue?.stock ?? '',
-    image: initialValue?.image || '',
-    categoryId: initialValue?.categoryId || '',
-  });
+ // src/components/seller/ProductForm.jsx — add this state field
+const [form, setForm] = useState({
+  title: initialValue?.title || '',
+  description: initialValue?.description || '',
+  price: initialValue?.price || '',
+  stock: initialValue?.stock ?? '',
+  image: initialValue?.image || '',
+  categoryId: initialValue?.categoryId || '',
+  discountPercent: initialValue?.discountPercent || '',
+});
+
+
+  
   const [error, setError] = useState('');
 
   // Derived, not stored: falls back to the first category once categories
@@ -24,11 +29,12 @@ export default function ProductForm({ initialValue, categories, onSubmit, onCanc
 
     try {
       await onSubmit({
-        ...form,
-        price: parseFloat(form.price),
-        stock: parseInt(form.stock, 10),
-        categoryId: Number(effectiveCategoryId),
-      });
+  ...form,
+  price: parseFloat(form.price),
+  stock: parseInt(form.stock, 10),
+  categoryId: Number(form.categoryId),
+  discountPercent: form.discountPercent ? parseFloat(form.discountPercent) : null,
+});
     } catch (err) {
       const validationErrors = err.response?.data?.validationErrors;
       if (validationErrors) {
@@ -98,6 +104,21 @@ export default function ProductForm({ initialValue, categories, onSubmit, onCanc
             className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink"
           />
         </div>
+
+        <div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">Discount % (optional)</label>
+  <input
+    type="number"
+    name="discountPercent"
+    value={form.discountPercent}
+    onChange={handleChange}
+    min="0"
+    max="90"
+    step="0.01"
+    placeholder="e.g. 20 for 20% off"
+    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink"
+  />
+</div>
       </div>
 
       <div>

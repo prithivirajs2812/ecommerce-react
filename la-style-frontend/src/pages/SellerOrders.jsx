@@ -102,11 +102,13 @@ export default function SellerOrders() {
         <>
           <div className="space-y-4">
             {orders.map((order) => (
-              <Link
-                key={order.id}
-                to={`/orders/${order.id}`}
-                className="block bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow p-6"
-              >
+              
+<Link
+  key={order.id}
+  to={`/orders/${order.id}`}
+  state={{ from: 'seller' }}
+  className="block bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow p-6"
+>
                 <div className="flex items-center justify-between flex-wrap gap-3">
                   <div>
                     <p className="font-semibold text-gray-800">Order #{order.id}</p>
@@ -119,9 +121,9 @@ export default function SellerOrders() {
 
                   <div className="flex items-center gap-4">
                     <span className="text-sm text-gray-500">
-                      {order.items?.length || 0} item{order.items?.length === 1 ? '' : 's'}
-                    </span>
-                    <span className="font-[700] text-brand-deep">₹{order.totalAmount}</span>
+  {order.items?.length || 0} item{order.items?.length === 1 ? '' : 's'}
+</span>
+<span className="font-[700] text-brand-deep">₹{order.sellerSubtotal}</span>
                     <OrderStatusBadge status={order.status} />
                   </div>
                 </div>

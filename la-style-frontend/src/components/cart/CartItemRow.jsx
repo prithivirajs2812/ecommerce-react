@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import QuantitySelector from '../product/QuantitySelector';
 
 export default function CartItemRow({ item, onQuantityChange, onRemove, isUpdating }) {
+  const hasDiscount = item.discountPercent > 0;
+
   return (
     <div className="flex items-center gap-4 py-5 border-b border-gray-100 last:border-0">
       <Link to={`/products/${item.productId}`} className="shrink-0">
@@ -24,7 +26,12 @@ export default function CartItemRow({ item, onQuantityChange, onRemove, isUpdati
         >
           {item.productTitle}
         </Link>
-        <p className="text-sm text-gray-500 mt-1">₹{item.unitPrice}</p>
+        <div className="flex items-center gap-2 mt-1">
+          <p className="text-sm text-gray-500">₹{item.unitPrice}</p>
+          {hasDiscount && (
+            <p className="text-xs text-gray-400 line-through">₹{item.originalPrice}</p>
+          )}
+        </div>
         {item.availableStock < item.quantity && (
           <p className="text-xs text-red-500 mt-1">
             Only {item.availableStock} left in stock

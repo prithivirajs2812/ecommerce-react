@@ -194,6 +194,7 @@ export default function MyProducts() {
                   <th className="py-3 px-6 font-medium">Category</th>
                   <th className="py-3 px-6 font-medium text-right">Price</th>
                   <th className="py-3 px-6 font-medium text-right">Stock</th>
+                  <th className="py-3 px-6 font-medium text-right">Discount</th>
                   <th className="py-3 px-6 font-medium text-right">Actions</th>
                 </tr>
               </thead>
@@ -207,6 +208,15 @@ export default function MyProducts() {
                       <span className={product.stock === 0 ? 'text-red-500 font-medium' : 'text-gray-600'}>
                         {product.stock}
                       </span>
+                    </td>
+                    <td className="py-3 px-6 text-right">
+                      {product.discountPercent > 0 ? (
+                        <span className="text-brand-pink font-semibold">
+                          {product.discountPercent}% OFF
+                        </span>
+                      ) : (
+                        <span className="text-gray-500">None</span>
+                      )}
                     </td>
                     <td className="py-3 px-6 text-right">
                       <button
