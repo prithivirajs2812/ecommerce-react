@@ -22,6 +22,7 @@ import Deals from '../pages/Deals';
 import SearchResults from '../pages/SearchResults';
 import About from '../pages/About';
 import Contact from '../pages/Contact';
+import AdminMessages from '../pages/admin/AdminMessages';
 
 const routeConfig = [
   { path: '/', element: <Home /> },
@@ -46,7 +47,8 @@ const routeConfig = [
 { path: '/search', element: <SearchResults /> },
 { path: '/about', element: <About /> },
 { path: '/contact', element: <Contact /> },
-  { path: '/seller/orders', element: <SellerOrders /> }
+  { path: '/seller/orders', element: <SellerOrders /> },
+  { path: '/admin/messages', element: <AdminMessages /> }
 ];
 
 export default routeConfig;

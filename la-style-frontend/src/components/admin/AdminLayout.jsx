@@ -1,4 +1,3 @@
-// src/components/admin/AdminLayout.jsx
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import useAuthStore from '../../store/useAuthStore';
@@ -8,6 +7,7 @@ const TABS = [
   { to: '/admin/users', label: 'Users' },
   { to: '/admin/sellers', label: 'Sellers' },
   { to: '/admin/coupons', label: 'Coupons' },
+  { to: '/admin/messages', label: 'Messages' },
 ];
 
 export default function AdminLayout({ children }) {

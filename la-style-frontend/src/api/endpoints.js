@@ -82,3 +82,12 @@ export const COUPON_ENDPOINTS = {
   DEACTIVATE: (id) => `/admin/coupons/${id}/deactivate`,
 };
 
+
+export const CONTACT_ENDPOINTS = {
+  BASE: '/contact',
+};
+
+export const ADMIN_CONTACT_ENDPOINTS = {
+  ALL: '/admin/contact-messages',
+  MARK_READ: (id) => `/admin/contact-messages/${id}/read`,
+};

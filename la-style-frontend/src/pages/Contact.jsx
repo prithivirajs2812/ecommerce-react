@@ -1,17 +1,33 @@
 // src/pages/Contact.jsx
 import { useState } from 'react';
+import { submitContactMessage } from '../api/contactApi';
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // No backend endpoint exists for contact submissions yet — this is a
-    // client-side-only acknowledgment for now.
-    setSubmitted(true);
+    setError('');
+    setSubmitting(true);
+
+    try {
+      await submitContactMessage(form);
+      setSubmitted(true);
+    } catch (err) {
+      const validationErrors = err.response?.data?.validationErrors;
+      if (validationErrors) {
+        setError(Object.values(validationErrors)[0]);
+      } else {
+        setError(err.response?.data?.message || 'Could not send your message. Please try again.');
+      }
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -25,6 +41,12 @@ export default function Contact() {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3">
+              {error}
+            </div>
+          )}
+
           <input
             name="name" placeholder="Your name" value={form.name}
             onChange={handleChange} required
@@ -37,14 +59,15 @@ export default function Contact() {
           />
           <textarea
             name="message" placeholder="Your message" value={form.message}
-            onChange={handleChange} required rows={5}
+            onChange={handleChange} required rows={5} maxLength={2000}
             className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-pink resize-none"
           />
           <button
             type="submit"
-            className="bg-brand-pink hover:bg-pink-600 transition-colors text-white font-semibold rounded-lg py-3 px-6"
+            disabled={submitting}
+            className="bg-brand-pink hover:bg-pink-600 disabled:opacity-60 transition-colors text-white font-semibold rounded-lg py-3 px-6"
           >
-            Send Message
+            {submitting ? 'Sending...' : 'Send Message'}
           </button>
         </form>
       )}
