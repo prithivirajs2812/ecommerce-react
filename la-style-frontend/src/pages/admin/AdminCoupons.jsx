@@ -2,13 +2,11 @@
 import { useState, useEffect } from 'react';
 import { getAllCoupons, createCoupon, updateCoupon, deactivateCoupon } from '../../api/couponApi';
 import AdminLayout from '../../components/admin/AdminLayout';
-import NotAdminFallback from '../../components/admin/NotAdminFallback';
 import CouponForm from '../../components/admin/CouponForm';
 
 export default function AdminCoupons() {
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [forbidden, setForbidden] = useState(false);
   const [error, setError] = useState('');
 
   const [showForm, setShowForm] = useState(false);
@@ -22,17 +20,11 @@ export default function AdminCoupons() {
     async function load() {
       setLoading(true);
       setError('');
-      setForbidden(false);
       try {
         const res = await getAllCoupons();
         if (!ignore) setCoupons(res.data);
-      } catch (err) {
-        if (ignore) return;
-        if (err.response?.status === 403) {
-          setForbidden(true);
-        } else {
-          setError('Failed to load coupons.');
-        }
+      } catch {
+        if (!ignore) setError('Failed to load coupons.');
       } finally {
         if (!ignore) setLoading(false);
       }
@@ -89,8 +81,6 @@ export default function AdminCoupons() {
     <AdminLayout>
       {loading ? (
         <div className="text-center text-gray-400 py-20">Loading...</div>
-      ) : forbidden ? (
-        <NotAdminFallback />
       ) : (
         <>
           <div className="flex justify-end mb-6">

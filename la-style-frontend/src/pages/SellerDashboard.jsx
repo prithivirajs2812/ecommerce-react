@@ -1,46 +1,24 @@
 // src/pages/SellerDashboard.jsx
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { getSellerDashboard } from '../api/dashboardApi';
-import useAuthStore from '../store/useAuthStore';
 
 export default function SellerDashboard() {
-  const navigate = useNavigate();
-  const accessToken = useAuthStore((state) => state.accessToken);
-  const isAuthenticated = !!accessToken;
-
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [notSeller, setNotSeller] = useState(false);
   const [error, setError] = useState('');
 
-  // Effect 1: auth guard.
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    }
-  }, [isAuthenticated, navigate]);
-
-  // Effect 2: fetch dashboard.
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
     let ignore = false;
 
     async function loadDashboard() {
       setLoading(true);
       setError('');
-      setNotSeller(false);
       try {
         const res = await getSellerDashboard();
         if (!ignore) setData(res.data);
-      } catch (err) {
-        if (ignore) return;
-        if (err.response?.status === 403) {
-          setNotSeller(true);
-        } else {
-          setError('Failed to load your dashboard. Please try again.');
-        }
+      } catch {
+        if (!ignore) setError('Failed to load your dashboard. Please try again.');
       } finally {
         if (!ignore) setLoading(false);
       }
@@ -51,30 +29,12 @@ export default function SellerDashboard() {
     return () => {
       ignore = true;
     };
-  }, [isAuthenticated]);
-
-  if (!isAuthenticated) return null;
+  }, []);
 
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto px-6 py-20 text-center text-gray-400">
         Loading your dashboard...
-      </div>
-    );
-  }
-
-  if (notSeller) {
-    return (
-      <div className="max-w-xl mx-auto px-6 py-20 text-center">
-        <p className="text-gray-500 text-lg mb-6">
-          You need a verified seller account to access this dashboard.
-        </p>
-        <Link
-          to="/become-seller"
-          className="inline-block bg-brand-pink hover:bg-pink-600 transition-colors text-white font-semibold px-6 py-3 rounded-lg"
-        >
-          Apply to Become a Seller
-        </Link>
       </div>
     );
   }
@@ -95,18 +55,17 @@ export default function SellerDashboard() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
-
-<div className="flex items-center justify-between mb-8">
-  <h1 className="font-display font-[800] text-3xl text-brand-deep">Seller Dashboard</h1>
-  <div className="flex gap-4">
-    <Link to="/seller/orders" className="text-sm text-brand-pink font-semibold hover:underline">
-      Customer Orders →
-    </Link>
-    <Link to="/seller/products" className="text-sm text-brand-pink font-semibold hover:underline">
-      Manage Products →
-    </Link>
-  </div>
-</div>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="font-display font-[800] text-3xl text-brand-deep">Seller Dashboard</h1>
+        <div className="flex gap-4">
+          <Link to="/seller/orders" className="text-sm text-brand-pink font-semibold hover:underline">
+            Customer Orders →
+          </Link>
+          <Link to="/seller/products" className="text-sm text-brand-pink font-semibold hover:underline">
+            Manage Products →
+          </Link>
+        </div>
+      </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-10">
         <StatCard label="Total Orders" value={data.totalOrders} />

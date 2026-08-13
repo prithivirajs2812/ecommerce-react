@@ -2,12 +2,10 @@
 import { useState, useEffect } from 'react';
 import { getAdminDashboard } from '../../api/adminApi';
 import AdminLayout from '../../components/admin/AdminLayout';
-import NotAdminFallback from '../../components/admin/NotAdminFallback';
 
 export default function AdminOverview() {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [forbidden, setForbidden] = useState(false);
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -16,17 +14,11 @@ export default function AdminOverview() {
     async function load() {
       setLoading(true);
       setError('');
-      setForbidden(false);
       try {
         const res = await getAdminDashboard();
         if (!ignore) setData(res.data);
-      } catch (err) {
-        if (ignore) return;
-        if (err.response?.status === 403) {
-          setForbidden(true);
-        } else {
-          setError('Failed to load dashboard.');
-        }
+      } catch{
+        if (!ignore) setError('Failed to load dashboard.');
       } finally {
         if (!ignore) setLoading(false);
       }
@@ -43,8 +35,6 @@ export default function AdminOverview() {
     <AdminLayout>
       {loading ? (
         <div className="text-center text-gray-400 py-20">Loading...</div>
-      ) : forbidden ? (
-        <NotAdminFallback />
       ) : error || !data ? (
         <div className="text-center text-red-500 py-20">{error}</div>
       ) : (

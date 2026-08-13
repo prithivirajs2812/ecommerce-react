@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { getAllUsers, banUser, unbanUser } from '../../api/adminApi';
 import AdminLayout from '../../components/admin/AdminLayout';
-import NotAdminFallback from '../../components/admin/NotAdminFallback';
 import Pagination from '../../components/product/Pagination';
 
 export default function AdminUsers() {
@@ -10,7 +9,6 @@ export default function AdminUsers() {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [forbidden, setForbidden] = useState(false);
   const [error, setError] = useState('');
   const [actingId, setActingId] = useState(null);
 
@@ -20,20 +18,14 @@ export default function AdminUsers() {
     async function load() {
       setLoading(true);
       setError('');
-      setForbidden(false);
       try {
         const res = await getAllUsers(page, 20);
         if (!ignore) {
           setUsers(res.data.content);
           setTotalPages(res.data.totalPages);
         }
-      } catch (err) {
-        if (ignore) return;
-        if (err.response?.status === 403) {
-          setForbidden(true);
-        } else {
-          setError('Failed to load users.');
-        }
+      } catch {
+        if (!ignore) setError('Failed to load users.');
       } finally {
         if (!ignore) setLoading(false);
       }
@@ -63,8 +55,6 @@ export default function AdminUsers() {
     <AdminLayout>
       {loading ? (
         <div className="text-center text-gray-400 py-20">Loading...</div>
-      ) : forbidden ? (
-        <NotAdminFallback />
       ) : (
         <>
           {error && (

@@ -2,16 +2,14 @@
 import { useState, useEffect } from 'react';
 import { getAllSellers, getPendingSellers, verifySeller } from '../../api/adminApi';
 import AdminLayout from '../../components/admin/AdminLayout';
-import NotAdminFallback from '../../components/admin/NotAdminFallback';
 import Pagination from '../../components/product/Pagination';
 
 export default function AdminSellers() {
-  const [filter, setFilter] = useState('all'); // 'all' | 'pending'
+  const [filter, setFilter] = useState('all');
   const [sellers, setSellers] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [forbidden, setForbidden] = useState(false);
   const [error, setError] = useState('');
   const [verifyingId, setVerifyingId] = useState(null);
 
@@ -21,7 +19,6 @@ export default function AdminSellers() {
     async function load() {
       setLoading(true);
       setError('');
-      setForbidden(false);
       try {
         const res = filter === 'pending'
           ? await getPendingSellers(page, 20)
@@ -30,13 +27,8 @@ export default function AdminSellers() {
           setSellers(res.data.content);
           setTotalPages(res.data.totalPages);
         }
-      } catch (err) {
-        if (ignore) return;
-        if (err.response?.status === 403) {
-          setForbidden(true);
-        } else {
-          setError('Failed to load sellers.');
-        }
+      } catch {
+        if (!ignore) setError('Failed to load sellers.');
       } finally {
         if (!ignore) setLoading(false);
       }
@@ -94,8 +86,6 @@ export default function AdminSellers() {
 
       {loading ? (
         <div className="text-center text-gray-400 py-20">Loading...</div>
-      ) : forbidden ? (
-        <NotAdminFallback />
       ) : (
         <>
           {error && (

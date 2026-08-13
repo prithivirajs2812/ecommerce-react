@@ -1,23 +1,16 @@
 // src/pages/MyProducts.jsx
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getMyProducts, createProduct, updateProduct, deleteProduct } from '../api/productApi';
 import { getAllCategories } from '../api/categoryApi';
-import useAuthStore from '../store/useAuthStore';
 import ProductForm from '../components/seller/ProductForm';
 import Pagination from '../components/product/Pagination';
 
 export default function MyProducts() {
-  const navigate = useNavigate();
-  const accessToken = useAuthStore((state) => state.accessToken);
-  const isAuthenticated = !!accessToken;
-
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [notSeller, setNotSeller] = useState(false);
   const [error, setError] = useState('');
 
   const [showForm, setShowForm] = useState(false);
@@ -25,25 +18,12 @@ export default function MyProducts() {
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
 
-  // Effect 1: auth guard.
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    }
-  }, [isAuthenticated, navigate]);
-
-
-
-  // Effect 2: fetch products + categories.
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
     let ignore = false;
 
     async function load() {
       setLoading(true);
       setError('');
-      setNotSeller(false);
       try {
         const [productsRes, categoriesRes] = await Promise.all([
           getMyProducts(page, 20),
@@ -54,13 +34,8 @@ export default function MyProducts() {
           setTotalPages(productsRes.data.totalPages);
           setCategories(categoriesRes.data);
         }
-      } catch (err) {
-        if (ignore) return;
-        if (err.response?.status === 403) {
-          setNotSeller(true);
-        } else {
-          setError('Failed to load your products. Please try again.');
-        }
+      } catch {
+        if (!ignore) setError('Failed to load your products. Please try again.');
       } finally {
         if (!ignore) setLoading(false);
       }
@@ -71,7 +46,7 @@ export default function MyProducts() {
     return () => {
       ignore = true;
     };
-  }, [isAuthenticated, page]);
+  }, [page]);
 
   const handleCreate = () => {
     setEditingProduct(null);
@@ -82,8 +57,6 @@ export default function MyProducts() {
     setEditingProduct(product);
     setShowForm(true);
   };
-
-
 
   const handleSubmit = async (data) => {
     setSubmitting(true);
@@ -96,7 +69,6 @@ export default function MyProducts() {
       setShowForm(false);
       setEditingProduct(null);
 
-      // Refetch this page directly.
       const res = await getMyProducts(page, 20);
       setProducts(res.data.content);
       setTotalPages(res.data.totalPages);
@@ -104,7 +76,6 @@ export default function MyProducts() {
       setSubmitting(false);
     }
   };
-
 
   const handleDelete = async (productId) => {
     setDeletingId(productId);
@@ -119,28 +90,10 @@ export default function MyProducts() {
     }
   };
 
-  if (!isAuthenticated) return null;
-
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto px-6 py-20 text-center text-gray-400">
         Loading your products...
-      </div>
-    );
-  }
-
-  if (notSeller) {
-    return (
-      <div className="max-w-xl mx-auto px-6 py-20 text-center">
-        <p className="text-gray-500 text-lg mb-6">
-          You need a seller account to manage product listings.
-        </p>
-        <button
-          onClick={() => navigate('/become-seller')}
-          className="inline-block bg-brand-pink hover:bg-pink-600 transition-colors text-white font-semibold px-6 py-3 rounded-lg"
-        >
-          Apply to Become a Seller
-        </button>
       </div>
     );
   }
