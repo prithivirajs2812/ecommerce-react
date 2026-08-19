@@ -91,3 +91,10 @@ export const ADMIN_CONTACT_ENDPOINTS = {
   ALL: '/admin/contact-messages',
   MARK_READ: (id) => `/admin/contact-messages/${id}/read`,
 };
+
+export const NOTIFICATION_ENDPOINTS = {
+  ALL: '/notifications',
+  UNREAD_COUNT: '/notifications/unread-count',
+  MARK_READ: (id) => `/notifications/${id}/read`,
+  MARK_ALL_READ: '/notifications/read-all',
+};

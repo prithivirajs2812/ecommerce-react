@@ -1,5 +1,6 @@
+/* src/index.css */
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&family=Kameron:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&family=Kameron:wght@400..700&family=Kaushan+Script&display=swap');
 
 @theme {
   --color-brand-pink: #EC1E63;
@@ -10,6 +11,7 @@
   --font-display: "Poppins", sans-serif;
   --font-body: "Montserrat", sans-serif;
   --font-serif-display: "Kameron", serif;
+  --font-script: "Kaushan Script", cursive;
 }
 
 body {
@@ -23,5 +25,11 @@ h1, h2, h3, .font-display {
 .font-serif-display {
   font-family: theme(--font-serif-display);
   font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.font-script {
+  font-family: theme(--font-script);
+  font-weight: 500;
   font-style: normal;
 }

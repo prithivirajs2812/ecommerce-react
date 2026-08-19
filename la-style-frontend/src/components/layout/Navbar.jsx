@@ -7,6 +7,7 @@ import cartGif from '../../assets/shopping-cart.gif';
 import profileGif from '../../assets/profile.gif';
 import useAuthStore from '../../store/useAuthStore';
 import { logoutUser } from '../../api/authApi';
+import NotificationBell from './NotificationBell';
 
 export default function Navbar() {
   const user = useAuthStore((state) => state.user);
@@ -62,7 +63,7 @@ export default function Navbar() {
           <img src={logo} alt="LA Style" className="h-20 w-auto" />
         </Link>
 
-        <nav className="hidden md:flex gap-8 font-medium text-gray-700">
+        <nav className="font-script  hidden md:flex gap-8 font-medium text-gray-700">
           <Link to="/" className="hover:text-brand-pink transition-colors">Home</Link>
           <Link to="/shop" className="hover:text-brand-pink transition-colors">Shop</Link>
           <Link to="/shop" className="hover:text-brand-pink transition-colors">Categories</Link>
@@ -100,6 +101,8 @@ export default function Navbar() {
           <Link to="/cart" aria-label="Cart" className="hover:text-brand-pink transition-colors">
             <img src={cartGif} alt="" className="h-10 w-10 object-contain" />
           </Link>
+
+          {isAuthenticated && <NotificationBell />}
 
           {isAuthenticated ? (
             <div className="relative" ref={menuRef}>
