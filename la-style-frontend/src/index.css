@@ -33,3 +33,10 @@ h1, h2, h3, .font-display {
   font-weight: 500;
   font-style: normal;
 }
+
+/* src/index.css — add this */
+html,
+body,
+#root {
+  height: 100%;
+}
