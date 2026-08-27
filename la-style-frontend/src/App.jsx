@@ -23,7 +23,7 @@ function App() {
   }
 
   return (
-    <div className='h-full w-full bg-[radial-gradient(125%_125%_at_50%_90%,_#fff_20%,_#f8aff6_100%)]'>
+    <div className='h-100% w-100% bg-[radial-gradient(125%_125%_at_50%_90%,_#fff_20%,_#f8aff6_100%)]'>
       <BrowserRouter>
         <Navbar />
         <Routes>
