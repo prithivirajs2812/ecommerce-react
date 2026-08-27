@@ -13,14 +13,12 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
 
-  // Effect 1: auth guard only.
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
     }
   }, [isAuthenticated, navigate]);
 
-  // Effect 2: fetch profile.
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -50,7 +48,7 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="max-w-2xl mx-auto px-6 py-20 text-center text-gray-400">
+      <div className="max-w-5xl mx-auto px-6 py-20 text-center text-gray-400">
         Loading your profile...
       </div>
     );
@@ -58,7 +56,7 @@ export default function Profile() {
 
   if (loadError || !profile) {
     return (
-      <div className="max-w-2xl mx-auto px-6 py-20 text-center">
+      <div className="max-w-5xl mx-auto px-6 py-20 text-center">
         <p className="text-red-500 mb-4">{loadError}</p>
         <button
           onClick={() => window.location.reload()}
@@ -71,12 +69,17 @@ export default function Profile() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-10 space-y-10">
-      <h1 className="font-display font-[800] text-3xl text-brand-deep">My Profile</h1>
+    <div className="max-w-5xl mx-auto px-6 py-10">
+      <h1 className="font-display font-[800] text-3xl text-brand-deep mb-8">My Profile</h1>
 
-      <ProfileDetailsForm profile={profile} onSaved={setProfile} />
-      <SellerStatusSection isSeller={profile.seller} />
-      <PasswordChangeForm />
+      <div className="grid md:grid-cols-2 gap-6 items-start">
+        <ProfileDetailsForm profile={profile} onSaved={setProfile} />
+
+        <div className="space-y-6">
+          <SellerStatusSection isSeller={profile.seller} />
+          <PasswordChangeForm />
+        </div>
+      </div>
     </div>
   );
 }
@@ -189,7 +192,6 @@ function ProfileDetailsForm({ profile, onSaved }) {
     </section>
   );
 }
-// src/pages/Profile.jsx — only the SellerStatusSection function changes
 
 function SellerStatusSection({ isSeller }) {
   return (
@@ -232,10 +234,6 @@ function SellerStatusSection({ isSeller }) {
     </section>
   );
 }
-
-
-
-
 
 function PasswordChangeForm() {
   const [form, setForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
