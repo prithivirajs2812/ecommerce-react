@@ -79,7 +79,7 @@ export default function Profile() {
           <SellerStatusSection isSeller={profile.seller} />
           <PasswordChangeForm />
         </div>
-      </div>gi
+      </div>
     </div>
   );
 }
