@@ -27,7 +27,7 @@ body {
    buttons, labels, forms) stays on Poppins so it reads crisp, not precious. */
 h1, h2, h3, .font-display {
   font-family: theme(--font-display);
-  font-weight: 600;
+  font-weight:900;
   letter-spacing: -0.01em;
 }
 

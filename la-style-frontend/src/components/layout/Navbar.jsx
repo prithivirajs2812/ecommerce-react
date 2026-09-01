@@ -2,17 +2,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
+import searchGif from '../../assets/search.gif';
+import cartGif from '../../assets/shopping-cart.gif';
+import profileGif from '../../assets/profile.gif';
 import useAuthStore from '../../store/useAuthStore';
 import { logoutUser } from '../../api/authApi';
 import NotificationBell from './NotificationBell';
-
-const NAV_LINKS = [
-  { to: '/', label: 'Home' },
-  { to: '/shop', label: 'Shop' },
-  { to: '/deals', label: 'Deals' },
-  { to: '/about', label: 'About' },
-  { to: '/contact', label: 'Contact' },
-];
 
 export default function Navbar() {
   const user = useAuthStore((state) => state.user);
@@ -62,52 +57,49 @@ export default function Navbar() {
   };
 
   return (
-    <header className="w-full bg-brand-ivory/90 backdrop-blur-sm border-b border-brand-deep/10 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
-        <Link to="/" className="flex items-center shrink-0">
-          <img src={logo} alt="LA Style" className="h-11 w-auto" />
+    <header className="w-full bg-white shadow-sm sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-2">
+        <Link to="/" className="flex items-center">
+          <img src={logo} alt="LA Style" className="h-20 w-auto" />
         </Link>
 
-        <nav className="hidden md:flex items-center gap-9 font-ui text-[13px] tracking-[0.04em] text-brand-deep/80">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className="relative py-1 hover:text-brand-deep transition-colors after:absolute after:left-0 after:-bottom-0.5 after:h-px after:w-0 after:bg-brand-gold after:transition-all hover:after:w-full"
-            >
-              {link.label}
-            </Link>
-          ))}
+        <nav className="font-script  hidden md:flex gap-8 font-medium text-gray-700">
+          <Link to="/" className="hover:text-brand-pink transition-colors">Home</Link>
+          <Link to="/shop" className="hover:text-brand-pink transition-colors">Shop</Link>
+          <Link to="/shop" className="hover:text-brand-pink transition-colors">Categories</Link>
+          <Link to="/deals" className="hover:text-brand-pink transition-colors">Deals</Link>
+          <Link to="/about" className="hover:text-brand-pink transition-colors">About Us</Link>
+          <Link to="/contact" className="hover:text-brand-pink transition-colors">Contact</Link>
         </nav>
 
-        <div className="flex items-center gap-5 text-brand-deep">
+        <div className="flex items-center gap-5 text-gray-700">
           <div className="relative" ref={searchRef}>
             <button
               onClick={() => setSearchOpen((prev) => !prev)}
               aria-label="Search"
               className="hover:text-brand-pink transition-colors"
             >
-              <SearchIcon />
+              <img src={searchGif} alt="" className="h-10 w-10 object-contain" />
             </button>
 
             {searchOpen && (
               <form
                 onSubmit={handleSearchSubmit}
-                className="absolute right-0 mt-3 w-64 bg-white rounded-lg border border-brand-deep/10 shadow-[0_8px_30px_-8px_rgba(30,11,54,0.18)] p-2 z-50"
+                className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-100 p-2 z-50"
               >
                 <input
                   autoFocus
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search products…"
-                  className="w-full border border-brand-deep/15 rounded-md px-3 py-2 text-sm font-ui focus:outline-none focus:ring-1 focus:ring-brand-gold"
+                  placeholder="Search products..."
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink"
                 />
               </form>
             )}
           </div>
 
           <Link to="/cart" aria-label="Cart" className="hover:text-brand-pink transition-colors">
-            <CartIcon />
+            <img src={cartGif} alt="" className="h-10 w-10 object-contain" />
           </Link>
 
           {isAuthenticated && <NotificationBell />}
@@ -118,35 +110,35 @@ export default function Navbar() {
                 onClick={() => setMenuOpen((prev) => !prev)}
                 className="flex items-center gap-2 hover:text-brand-pink transition-colors"
               >
-                <UserIcon />
-                <span className="hidden lg:inline font-ui text-[13px] font-medium">
+                <img src={profileGif} alt="" className="h-10 w-10 object-contain" />
+                <span className="hidden lg:inline font-medium text-sm">
                   {user?.email?.split('@')[0]}
                 </span>
               </button>
 
               {menuOpen && (
-                <div className="absolute right-0 mt-3 w-52 bg-white rounded-lg border border-brand-deep/10 shadow-[0_8px_30px_-8px_rgba(30,11,54,0.18)] py-2 z-50 font-ui">
-                  <Link to="/profile" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-[13px] text-brand-deep/80 hover:bg-brand-ivory">
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
+                  <Link to="/profile" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                     My Profile
                   </Link>
-                  <Link to="/orders" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-[13px] text-brand-deep/80 hover:bg-brand-ivory">
+                  <Link to="/orders" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                     My Orders
                   </Link>
-                  <Link to="/wishlist" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-[13px] text-brand-deep/80 hover:bg-brand-ivory">
+                  <Link to="/wishlist" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                     My Wishlist
                   </Link>
                   {roles.includes('ROLE_SELLER') && (
-                    <Link to="/seller/dashboard" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-[13px] text-brand-deep/80 hover:bg-brand-ivory">
+                    <Link to="/seller/dashboard" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                       Seller Dashboard
                     </Link>
                   )}
                   {roles.includes('ROLE_ADMIN') && (
-                    <Link to="/admin" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-[13px] text-brand-deep/80 hover:bg-brand-ivory">
+                    <Link to="/admin" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                       Admin Panel
                     </Link>
                   )}
-                  <hr className="my-1 border-brand-deep/10" />
-                  <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-[13px] text-brand-pink hover:bg-brand-ivory">
+                  <hr className="my-1 border-gray-100" />
+                  <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
                     Logout
                   </button>
                 </div>
@@ -154,40 +146,11 @@ export default function Navbar() {
             </div>
           ) : (
             <Link to="/login" aria-label="Account" className="hover:text-brand-pink transition-colors">
-              <UserIcon />
+              <img src={profileGif} alt="" className="h-10 w-10 object-contain" />
             </Link>
           )}
         </div>
       </div>
     </header>
-  );
-}
-
-function SearchIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <circle cx="11" cy="11" r="7" />
-      <path d="M21 21l-4.3-4.3" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function CartIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M6 6h15l-1.5 9h-12z" strokeLinejoin="round" />
-      <path d="M6 6L5 3H2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="9.5" cy="20" r="1.15" />
-      <circle cx="17.5" cy="20" r="1.15" />
-    </svg>
-  );
-}
-
-function UserIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <circle cx="12" cy="8" r="3.5" />
-      <path d="M4.5 20c1.4-3.6 4.4-5.5 7.5-5.5s6.1 1.9 7.5 5.5" strokeLinecap="round" />
-    </svg>
   );
 }
