@@ -1,25 +1,38 @@
 /* src/index.css */
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&family=Kameron:wght@400..700&family=Kaushan+Script&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500&family=Kameron:wght@400..700&family=Kaushan+Script&display=swap');
 
 @theme {
   --color-brand-pink: #EC1E63;
   --color-brand-purple: #6B21A8;
   --color-brand-deep: #1E0B36;
   --color-brand-gold: #F5C542;
+  --color-brand-ivory: #FAF7F2;
+  --color-brand-hairline: #1E0B361A; /* brand-deep at ~10% */
 
-  --font-display: "Poppins", sans-serif;
+  --font-display: "Kameron", serif;
   --font-body: "Montserrat", sans-serif;
+  --font-ui: "Poppins", sans-serif;
   --font-serif-display: "Kameron", serif;
   --font-script: "Kaushan Script", cursive;
 }
 
 body {
   font-family: theme(--font-body);
+  background-color: var(--color-brand-ivory);
 }
 
+/* Display headings use the serif — this is the one signature move that
+   carries the "boutique" feel through the whole app. UI chrome (nav,
+   buttons, labels, forms) stays on Poppins so it reads crisp, not precious. */
 h1, h2, h3, .font-display {
   font-family: theme(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.font-ui {
+  font-family: theme(--font-ui);
 }
 
 .font-serif-display {
@@ -34,7 +47,16 @@ h1, h2, h3, .font-display {
   font-style: normal;
 }
 
-/* src/index.css — add this */
+/* Shared hairline — swap in for shadow-sm on cards throughout the app for
+   the quieter, more editorial elevation system. */
+.hairline {
+  border: 1px solid var(--color-brand-hairline);
+  box-shadow: none;
+}
+.hairline:hover {
+  border-color: color-mix(in srgb, var(--color-brand-gold) 60%, transparent);
+}
+
 html,
 body,
 #root {
