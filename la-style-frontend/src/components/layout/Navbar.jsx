@@ -66,7 +66,6 @@ export default function Navbar() {
         <nav className="font-script  hidden md:flex gap-8 font-medium text-gray-700">
           <Link to="/" className="hover:text-brand-pink transition-colors">Home</Link>
           <Link to="/shop" className="hover:text-brand-pink transition-colors">Shop</Link>
-          <Link to="/shop" className="hover:text-brand-pink transition-colors">Categories</Link>
           <Link to="/deals" className="hover:text-brand-pink transition-colors">Deals</Link>
           <Link to="/about" className="hover:text-brand-pink transition-colors">About Us</Link>
           <Link to="/contact" className="hover:text-brand-pink transition-colors">Contact</Link>
