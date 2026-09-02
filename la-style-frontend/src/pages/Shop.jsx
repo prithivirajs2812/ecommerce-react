@@ -28,7 +28,7 @@ function ProductGrid({ selectedCategory, page, onPageChange }) {
 
   if (error) {
     return (
-      <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3 mb-6">
+      <div className="bg-red-50 text-red-600 text-sm font-ui rounded-lg px-4 py-3 mb-6">
         {error}
       </div>
     );
@@ -38,14 +38,18 @@ function ProductGrid({ selectedCategory, page, onPageChange }) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="animate-pulse bg-gray-100 rounded-2xl aspect-[3/4]" />
+          <div key={i} className="animate-pulse bg-brand-deep/5 rounded-xl aspect-[3/4]" />
         ))}
       </div>
     );
   }
 
   if (products.length === 0) {
-    return <p className="text-gray-500 text-center py-20">No products found.</p>;
+    return (
+      <div className="text-center py-24">
+        <p className="font-display text-lg text-brand-deep/60">No products found.</p>
+      </div>
+    );
   }
 
   return (
@@ -88,18 +92,21 @@ export default function Shop() {
   };
 
   return (
-    <div className=" max-w-7xl mx-auto px-6 py-10">
-      <h1 className="font-display font-[800] text-3xl text-brand-deep mb-8">Shop</h1>
+    <div className="max-w-7xl mx-auto px-6 py-12">
+      <p className="font-ui text-[20px] tracking-[0.1em] text-brand-purple mb-2 font-bold">Shop the collection</p>
+      <h1 className="font-display text-3xl text-brand-deep mb-10">All Products</h1>
 
-      <div className="flex flex-col md:flex-row gap-8">
-        <aside className="md:w-56 shrink-0">
-          <h2 className="font-semibold text-gray-800 mb-3">Category</h2>
-          <ul className="space-y-2 text-sm">
+      <div className="flex flex-col md:flex-row gap-10">
+        <aside className="md:w-52 shrink-0">
+          <h2 className="font-ui text-[11px] tracking-[0.08em] text-brand-deep/50 mb-4">CATEGORY</h2>
+          <ul className="space-y-1 text-sm font-ui border-l border-brand-deep/10">
             <li>
               <button
                 onClick={() => handleCategorySelect(null)}
-                className={`text-left w-full hover:text-brand-pink transition-colors ${
-                  !selectedCategory ? 'text-brand-pink font-semibold' : 'text-gray-600'
+                className={`text-left w-full pl-4 py-1.5 border-l -ml-px transition-colors ${
+                  !selectedCategory
+                    ? 'border-brand-gold text-brand-deep font-medium'
+                    : 'border-transparent text-brand-deep/55 hover:text-brand-deep'
                 }`}
               >
                 All Products
@@ -109,8 +116,10 @@ export default function Shop() {
               <li key={cat.id}>
                 <button
                   onClick={() => handleCategorySelect(cat.id)}
-                  className={`text-left w-full hover:text-brand-pink transition-colors ${
-                    selectedCategory === String(cat.id) ? 'text-brand-pink font-semibold' : 'text-gray-600'
+                  className={`text-left w-full pl-4 py-1.5 border-l -ml-px transition-colors ${
+                    selectedCategory === String(cat.id)
+                      ? 'border-brand-gold text-brand-deep font-medium'
+                      : 'border-transparent text-brand-deep/55 hover:text-brand-deep'
                   }`}
                 >
                   {cat.name}

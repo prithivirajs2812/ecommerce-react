@@ -110,7 +110,7 @@ export default function Navbar() {
                 className="flex items-center gap-2 hover:text-brand-pink transition-colors"
               >
                 <img src={profileGif} alt="" className="h-10 w-10 object-contain" />
-                <span className="hidden lg:inline font-medium text-sm">
+                <span className="hidden lg:inline font-medium text-sm capitalize text-brand-deep">
                   {user?.email?.split('@')[0]}
                 </span>
               </button>

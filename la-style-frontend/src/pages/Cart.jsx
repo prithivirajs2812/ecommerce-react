@@ -15,14 +15,12 @@ export default function Cart() {
   const [error, setError] = useState('');
   const [updatingItemId, setUpdatingItemId] = useState(null);
 
-  // Effect 1: auth guard only.
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
     }
   }, [isAuthenticated, navigate]);
 
-  // Effect 2: data fetching — only runs once we know we're authenticated.
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -88,19 +86,19 @@ export default function Cart() {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto px-6 py-20 text-center text-gray-400">
-        Loading your cart...
+      <div className="max-w-5xl mx-auto px-6 py-24 text-center font-ui text-brand-deep/40">
+        Loading your cart…
       </div>
     );
   }
 
   if (error && !cart) {
     return (
-      <div className="max-w-5xl mx-auto px-6 py-20 text-center">
-        <p className="text-red-500 mb-4">{error}</p>
+      <div className="max-w-5xl mx-auto px-6 py-24 text-center">
+        <p className="text-red-500 font-ui text-sm mb-4">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="text-brand-pink font-semibold hover:underline"
+          className="text-brand-pink font-ui text-sm font-medium hover:underline"
         >
           Try again
         </button>
@@ -111,28 +109,28 @@ export default function Cart() {
   const isEmpty = !cart || cart.items.length === 0;
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-10">
-      <h1 className="font-display font-[800] text-3xl text-brand-deep mb-8">Your Cart</h1>
+    <div className="max-w-5xl mx-auto px-6 py-12">
+      <h1 className="font-display text-3xl text-brand-deep mb-10">Your Cart</h1>
 
       {error && (
-        <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3 mb-6">
+        <div className="bg-red-50 text-red-600 text-sm font-ui rounded-lg px-4 py-3 mb-6">
           {error}
         </div>
       )}
 
       {isEmpty ? (
-        <div className="text-center py-20">
-          <p className="text-gray-500 text-lg mb-6">Your cart is empty.</p>
+        <div className="text-center py-24">
+          <p className="font-display text-lg text-brand-deep/60 mb-6">Your cart is empty.</p>
           <Link
             to="/shop"
-            className="inline-block bg-brand-pink hover:bg-pink-600 transition-colors text-white font-semibold px-6 py-3 rounded-lg"
+            className="inline-block bg-brand-pink hover:bg-pink-600 transition-colors text-white font-ui text-sm font-medium px-6 py-3 rounded-lg"
           >
             Continue Shopping
           </Link>
         </div>
       ) : (
         <div className="grid md:grid-cols-3 gap-10">
-          <div className="md:col-span-2 bg-white rounded-2xl shadow-sm px-6">
+          <div className="md:col-span-2 bg-white rounded-xl border border-brand-deep/8 px-6">
             {cart.items.map((item) => (
               <CartItemRow
                 key={item.id}
@@ -146,27 +144,27 @@ export default function Cart() {
             <div className="py-4">
               <button
                 onClick={handleClearCart}
-                className="text-sm text-gray-500 hover:text-red-500 transition-colors"
+                className="text-[13px] font-ui text-brand-deep/45 hover:text-brand-pink transition-colors"
               >
                 Clear cart
               </button>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm p-8 h-fit">
-            <h2 className="font-semibold text-gray-800 mb-4">Order Summary</h2>
-            <div className="flex justify-between text-sm text-gray-600 mb-2">
+          <div className="bg-white rounded-xl border border-brand-deep/8 p-8 h-fit">
+            <h2 className="font-display text-lg text-brand-deep mb-5">Order Summary</h2>
+            <div className="flex justify-between text-[13px] font-ui text-brand-deep/60 mb-2">
               <span>Items ({cart.totalItems})</span>
               <span>₹{cart.totalAmount}</span>
             </div>
-            <div className="border-t border-gray-100 mt-4 pt-4 flex justify-between font-[700] text-brand-deep">
+            <div className="border-t border-brand-deep/8 mt-5 pt-5 flex justify-between font-display text-lg text-brand-deep">
               <span>Total</span>
               <span>₹{cart.totalAmount}</span>
             </div>
 
             <button
               onClick={() => navigate('/checkout')}
-              className="w-full mt-6 bg-brand-pink hover:bg-pink-600 transition-colors text-white font-semibold py-3 rounded-lg"
+              className="w-full mt-7 bg-brand-pink hover:bg-pink-600 transition-colors text-white font-ui text-sm font-medium py-3 rounded-lg"
             >
               Proceed to Checkout
             </button>

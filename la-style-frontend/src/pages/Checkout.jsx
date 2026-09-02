@@ -23,14 +23,12 @@ export default function Checkout() {
   const [error, setError] = useState('');
   const [placingOrder, setPlacingOrder] = useState(false);
 
-  // Effect 1: auth guard only.
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
     }
   }, [isAuthenticated, navigate]);
 
-  // Effect 2: load cart + addresses — only once we know we're authenticated.
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -111,17 +109,17 @@ export default function Checkout() {
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-6 py-20 text-center text-gray-400">
-        Loading checkout...
+      <div className="max-w-4xl mx-auto px-6 py-24 text-center font-ui text-brand-deep/40">
+        Loading checkout…
       </div>
     );
   }
 
   if (!cart) {
     return (
-      <div className="max-w-4xl mx-auto px-6 py-20 text-center">
-        <p className="text-red-500 mb-4">{error}</p>
-        <Link to="/cart" className="text-brand-pink font-semibold hover:underline">
+      <div className="max-w-4xl mx-auto px-6 py-24 text-center">
+        <p className="text-red-500 font-ui text-sm mb-4">{error}</p>
+        <Link to="/cart" className="text-brand-pink font-ui text-sm font-medium hover:underline">
           Back to Cart
         </Link>
       </div>
@@ -129,25 +127,25 @@ export default function Checkout() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10">
-      <h1 className="font-display font-[800] text-3xl text-brand-deep mb-8">Checkout</h1>
+    <div className="max-w-4xl mx-auto px-6 py-12">
+      <h1 className="font-display text-3xl text-brand-deep mb-10">Checkout</h1>
 
       {error && (
-        <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3 mb-6">
+        <div className="bg-red-50 text-red-600 text-sm font-ui rounded-lg px-4 py-3 mb-6">
           {error}
         </div>
       )}
 
       <div className="grid md:grid-cols-3 gap-10">
-        <div className="md:col-span-2 space-y-8">
+        <div className="md:col-span-2 space-y-10">
           <section>
-            <h2 className="font-semibold text-gray-800 mb-3">Shipping Address</h2>
-            <div className="space-y-3">
+            <h2 className="font-display text-lg text-brand-deep mb-4">Shipping Address</h2>
+            <div className="space-y-3 font-ui">
               {addresses.map((addr) => (
                 <label
                   key={addr.id}
                   className={`flex items-start gap-3 border rounded-xl p-4 cursor-pointer transition-colors ${
-                    selectedAddressId === addr.id ? 'border-brand-pink bg-pink-50/50' : 'border-gray-200'
+                    selectedAddressId === addr.id ? 'border-brand-gold bg-brand-ivory' : 'border-brand-deep/10'
                   }`}
                 >
                   <input
@@ -155,9 +153,9 @@ export default function Checkout() {
                     name="address"
                     checked={selectedAddressId === addr.id}
                     onChange={() => setSelectedAddressId(addr.id)}
-                    className="mt-1"
+                    className="mt-1 accent-brand-pink"
                   />
-                  <div className="text-sm text-gray-700">
+                  <div className="text-[13px] text-brand-deep/75 leading-relaxed">
                     <p>{addr.line1}{addr.line2 ? `, ${addr.line2}` : ''}</p>
                     <p>{addr.city}, {addr.state} {addr.zip}</p>
                     <p>{addr.country}</p>
@@ -174,7 +172,7 @@ export default function Checkout() {
               ) : (
                 <button
                   onClick={() => setShowNewAddressForm(true)}
-                  className="text-sm text-brand-pink font-semibold hover:underline"
+                  className="text-[13px] text-brand-pink font-medium hover:underline"
                 >
                   + Add a new address
                 </button>
@@ -183,16 +181,16 @@ export default function Checkout() {
           </section>
 
           <section>
-            <h2 className="font-semibold text-gray-800 mb-3">Payment Method</h2>
-            <div className="flex gap-3">
+            <h2 className="font-display text-lg text-brand-deep mb-4">Payment Method</h2>
+            <div className="flex gap-3 font-ui">
               {['COD', 'CARD', 'UPI'].map((method) => (
                 <button
                   key={method}
                   onClick={() => setPaymentMethod(method)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-[13px] font-medium border transition-colors ${
                     paymentMethod === method
-                      ? 'border-brand-pink bg-pink-50/50 text-brand-pink'
-                      : 'border-gray-200 text-gray-600'
+                      ? 'border-brand-gold bg-brand-ivory text-brand-deep'
+                      : 'border-brand-deep/10 text-brand-deep/60'
                   }`}
                 >
                   {method === 'COD' ? 'Cash on Delivery' : method}
@@ -202,25 +200,25 @@ export default function Checkout() {
           </section>
 
           <section>
-            <h2 className="font-semibold text-gray-800 mb-3">Coupon Code</h2>
+            <h2 className="font-display text-lg text-brand-deep mb-4">Coupon Code</h2>
             <input
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value)}
               placeholder="Enter coupon code (optional)"
-              className="w-full max-w-xs border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink"
+              className="w-full max-w-xs border border-brand-deep/15 rounded-lg px-4 py-2.5 text-sm font-ui focus:outline-none focus:ring-1 focus:ring-brand-gold"
             />
           </section>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-6 h-fit">
-          <h2 className="font-semibold text-gray-800 mb-4">Order Summary</h2>
+        <div className="bg-white rounded-xl border border-brand-deep/8 p-7 h-fit">
+          <h2 className="font-display text-lg text-brand-deep mb-4">Order Summary</h2>
           {cart.items.map((item) => (
-            <div key={item.id} className="flex justify-between text-sm text-gray-600 mb-2">
+            <div key={item.id} className="flex justify-between text-[13px] font-ui text-brand-deep/60 mb-2">
               <span className="truncate pr-2">{item.productTitle} × {item.quantity}</span>
               <span className="shrink-0">₹{item.subtotal}</span>
             </div>
           ))}
-          <div className="border-t border-gray-100 mt-4 pt-4 flex justify-between font-[700] text-brand-deep">
+          <div className="border-t border-brand-deep/8 mt-5 pt-5 flex justify-between font-display text-lg text-brand-deep">
             <span>Total</span>
             <span>₹{cart.totalAmount}</span>
           </div>
@@ -228,7 +226,7 @@ export default function Checkout() {
           <button
             onClick={handlePlaceOrder}
             disabled={placingOrder}
-            className="w-full mt-6 bg-brand-pink hover:bg-pink-600 disabled:opacity-60 transition-colors text-white font-semibold py-3 rounded-lg"
+            className="w-full mt-7 bg-brand-pink hover:bg-pink-600 disabled:opacity-60 transition-colors text-white font-ui text-sm font-medium py-3 rounded-lg"
           >
             {placingOrder ? 'Placing Order...' : 'Place Order'}
           </button>
