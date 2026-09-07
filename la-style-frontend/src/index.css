@@ -1,39 +1,27 @@
 /* src/index.css */
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500&family=Kameron:wght@400..700&family=Kaushan+Script&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&family=Kameron:wght@400..700&family=Kaushan+Script&display=swap');
 
 @theme {
   --color-brand-pink: #EC1E63;
   --color-brand-purple: #6B21A8;
   --color-brand-deep: #1E0B36;
   --color-brand-gold: #F5C542;
-  --color-brand-purple: #a136f7;
-  --color-brand-ivory: #FAF7F2;
-  --color-brand-hairline: #1E0B361A; /* brand-deep at ~10% */
+  --color-brand-cream: #FAF7F2;
 
-  --font-display: "Kameron", serif;
+  --font-display: "Poppins", sans-serif;
   --font-body: "Montserrat", sans-serif;
-  --font-ui: "Poppins", sans-serif;
   --font-serif-display: "Kameron", serif;
   --font-script: "Kaushan Script", cursive;
 }
 
 body {
   font-family: theme(--font-body);
-  background-color: var(--color-brand-ivory);
+  font-size: 17px; /* up from browser default 16px — everything downstream scales with it */
 }
 
-/* Display headings use the serif — this is the one signature move that
-   carries the "boutique" feel through the whole app. UI chrome (nav,
-   buttons, labels, forms) stays on Poppins so it reads crisp, not precious. */
 h1, h2, h3, .font-display {
   font-family: theme(--font-display);
-  font-weight:900;
-  letter-spacing: -0.01em;
-}
-
-.font-ui {
-  font-family: theme(--font-ui);
 }
 
 .font-serif-display {
@@ -48,18 +36,67 @@ h1, h2, h3, .font-display {
   font-style: normal;
 }
 
-/* Shared hairline — swap in for shadow-sm on cards throughout the app for
-   the quieter, more editorial elevation system. */
-.hairline {
-  border: 1px solid var(--color-brand-hairline);
-  box-shadow: none;
-}
-.hairline:hover {
-  border-color: color-mix(in srgb, var(--color-brand-gold) 60%, transparent);
-}
-
 html,
 body,
 #root {
   height: 100%;
+}
+
+/* ---- Fun, bouncy motion system ---- */
+
+/* A springy hover-lift for cards, buttons, tiles — anything clickable */
+.hover-pop {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.25s ease;
+}
+.hover-pop:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+.hover-pop:active {
+  transform: translateY(-1px) scale(0.98);
+  transition-duration: 0.1s;
+}
+
+/* Button press feedback */
+.press {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.press:active {
+  transform: scale(0.94);
+}
+
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(0.85) translateY(8px); }
+  60% { opacity: 1; transform: scale(1.03) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.animate-pop-in {
+  animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-6deg); }
+  75% { transform: rotate(6deg); }
+}
+.hover\:animate-wiggle:hover {
+  animation: wiggle 0.4s ease-in-out;
+}
+
+@keyframes heart-pop {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.4); }
+  60% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+.animate-heart-pop {
+  animation: heart-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-pop, .press, .animate-pop-in, .hover\:animate-wiggle:hover, .animate-heart-pop {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
 }
