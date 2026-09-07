@@ -35,12 +35,8 @@ function ProductDetail() {
   const [inWishlist, setInWishlist] = useState(false);
   const [wishlistBusy, setWishlistBusy] = useState(false);
 
-  // Derived — never explicitly reset in an effect. If the user isn't
-  // authenticated, the heart always renders as "not wishlisted", regardless
-  // of whatever the last authenticated check happened to leave in state.
   const wishlisted = isAuthenticated && inWishlist;
 
-  // --- reviews state ---
   const [reviews, setReviews] = useState([]);
   const [reviewPage, setReviewPage] = useState(0);
   const [reviewTotalPages, setReviewTotalPages] = useState(0);
@@ -76,7 +72,6 @@ function ProductDetail() {
     };
   }, [id]);
 
-  // Effect: only runs the async wishlist check when authenticated.
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -100,7 +95,6 @@ function ProductDetail() {
     };
   }, [id, isAuthenticated]);
 
-  // Load reviews + summary, refetchable via reloadReviews().
   const reloadReviews = async () => {
     setReviewsLoading(true);
     try {
@@ -232,33 +226,33 @@ function ProductDetail() {
   };
 
   if (loading) {
-    return <div className="max-w-7xl mx-auto px-6 py-20 text-center text-gray-400">Loading...</div>;
+    return <div className="max-w-7xl mx-auto px-6 py-24 text-center font-ui text-brand-deep/40">Loading…</div>;
   }
 
   if (notFound) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-20 text-center">
-        <p className="text-gray-500 text-lg">Product not found.</p>
+      <div className="max-w-7xl mx-auto px-6 py-24 text-center">
+        <p className="font-display text-lg text-brand-deep/60">Product not found.</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
-      <div className="grid md:grid-cols-2 gap-12">
-        <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
+    <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="grid md:grid-cols-2 gap-14">
+        <div className="aspect-square bg-brand-ivory rounded-xl overflow-hidden border border-brand-deep/8">
           {product.image ? (
             <img src={product.image} alt={product.title} className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-300">No image</div>
+            <div className="w-full h-full flex items-center justify-center text-brand-deep/20 font-ui text-sm">No image</div>
           )}
         </div>
 
         <div>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">{product.categoryName}</p>
-              <h1 className="font-display font-[800] text-3xl text-brand-deep mb-2">{product.title}</h1>
+              <p className="font-ui text-[11px] text-brand-deep/45 tracking-[0.08em] mb-2">{product.categoryName}</p>
+              <h1 className="font-display text-3xl text-brand-deep mb-3">{product.title}</h1>
               <RatingSummary summary={summary} />
             </div>
 
@@ -266,58 +260,59 @@ function ProductDetail() {
               onClick={handleToggleWishlist}
               disabled={wishlistBusy}
               aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-              className="shrink-0 disabled:opacity-50 transition-colors"
+              className="shrink-0 disabled:opacity-50 transition-colors mt-1"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className={`h-7 w-7 ${wishlisted ? 'text-brand-pink' : 'text-gray-300 hover:text-brand-pink'}`}
+                className={`h-6 w-6 ${wishlisted ? 'text-brand-pink' : 'text-brand-deep/25 hover:text-brand-pink'}`}
                 fill={wishlisted ? 'currentColor' : 'none'}
                 viewBox="0 0 24 24"
                 stroke="currentColor"
+                strokeWidth="1.5"
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
                   d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                 />
               </svg>
             </button>
           </div>
 
-<div className="flex items-center gap-3 mb-4 mt-4">
-  <p className="text-2xl font-[700] text-brand-pink">₹{product.effectivePrice}</p>
-  {product.discountPercent > 0 && (
-    <>
-      <p className="text-lg text-gray-400 line-through">₹{product.price}</p>
-      <span className="bg-brand-pink text-white text-xs font-bold px-2.5 py-1 rounded-full">
-        {product.discountPercent}% OFF
-      </span>
-    </>
-  )}
-</div>          <p className="text-gray-600 leading-relaxed mb-6">{product.description}</p>
+          <div className="flex items-baseline gap-3 mb-1 mt-5">
+            <p className="font-display text-2xl text-brand-deep">₹{product.effectivePrice}</p>
+            {product.discountPercent > 0 && (
+              <>
+                <p className="text-[15px] font-ui text-brand-deep/35 line-through">₹{product.price}</p>
+                <span className="border border-brand-pink/30 text-brand-pink text-[11px] font-ui font-medium px-2 py-0.5 rounded-full">
+                  {product.discountPercent}% OFF
+                </span>
+              </>
+            )}
+          </div>
+          <div className="h-px w-12 bg-brand-gold my-5" />
 
-          <p className="text-sm mb-6">
+          <p className="text-[14px] font-ui text-brand-deep/65 leading-relaxed mb-6">{product.description}</p>
+
+          <p className="text-[13px] font-ui mb-6">
             {product.stock > 0 ? (
-              <span className="text-green-600 font-medium">In stock ({product.stock} available)</span>
+              <span className="text-green-700">In stock — {product.stock} available</span>
             ) : (
-              <span className="text-red-500 font-medium">Out of stock</span>
+              <span className="text-brand-pink">Out of stock</span>
             )}
           </p>
 
           {product.stock > 0 && (
             <>
               <div className="mb-6">
-                <p className="text-sm font-medium text-gray-700 mb-2">Quantity</p>
+                <p className="text-[13px] font-ui font-medium text-brand-deep/70 mb-2">Quantity</p>
                 <QuantitySelector quantity={quantity} onChange={setQuantity} max={product.stock} />
               </div>
 
               {addStatus.type && (
                 <div
-                  className={`text-sm rounded-lg px-4 py-3 mb-4 ${
-                    addStatus.type === 'success'
-                      ? 'bg-green-50 text-green-600'
-                      : 'bg-red-50 text-red-600'
+                  className={`text-[13px] font-ui rounded-lg px-4 py-3 mb-4 ${
+                    addStatus.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'
                   }`}
                 >
                   {addStatus.message}
@@ -327,22 +322,22 @@ function ProductDetail() {
               <button
                 onClick={handleAddToCart}
                 disabled={adding}
-                className="w-full md:w-auto bg-brand-pink hover:bg-pink-600 disabled:opacity-60 transition-colors text-white font-semibold px-8 py-3 rounded-lg"
+                className="w-full md:w-auto bg-brand-pink hover:bg-pink-600 disabled:opacity-60 transition-colors text-white font-ui text-sm font-medium px-8 py-3 rounded-lg"
               >
-                {adding ? 'Adding...' : 'Add to Cart'}
+                {adding ? 'Adding…' : 'Add to Cart'}
               </button>
             </>
           )}
         </div>
       </div>
 
-      <section className="mt-16 max-w-3xl">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display font-[800] text-2xl text-brand-deep">Reviews</h2>
+      <section className="mt-20 max-w-3xl">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="font-display text-2xl text-brand-deep">Reviews</h2>
           {!showReviewForm && (
             <button
               onClick={handleWriteReview}
-              className="text-sm text-brand-pink font-semibold hover:underline"
+              className="text-[13px] font-ui text-brand-pink font-medium hover:underline"
             >
               Write a Review
             </button>
@@ -350,7 +345,7 @@ function ProductDetail() {
         </div>
 
         {reviewError && (
-          <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3 mb-4">
+          <div className="bg-red-50 text-red-600 text-sm font-ui rounded-lg px-4 py-3 mb-4">
             {reviewError}
           </div>
         )}
@@ -372,7 +367,7 @@ function ProductDetail() {
         {reviewsLoading ? (
           <div className="animate-pulse space-y-4">
             {Array.from({ length: 2 }).map((_, i) => (
-              <div key={i} className="h-20 bg-gray-100 rounded-xl" />
+              <div key={i} className="h-20 bg-brand-deep/5 rounded-xl" />
             ))}
           </div>
         ) : (

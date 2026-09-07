@@ -21,16 +21,14 @@ export default function OrderDetail() {
   const [notFound, setNotFound] = useState(false);
 
   const justPlaced = location.state?.justPlaced;
-const fromSeller = location.state?.from === 'seller';
+  const fromSeller = location.state?.from === 'seller';
 
-  // Effect 1: auth guard only.
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
     }
   }, [isAuthenticated, navigate]);
 
-  // Effect 2: fetch the order — only once we know we're authenticated.
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -66,17 +64,17 @@ const fromSeller = location.state?.from === 'seller';
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-6 py-20 text-center text-gray-400">
-        Loading order details...
+      <div className="max-w-4xl mx-auto px-6 py-24 text-center font-ui text-brand-deep/40">
+        Loading order details…
       </div>
     );
   }
 
   if (notFound) {
     return (
-      <div className="max-w-4xl mx-auto px-6 py-20 text-center">
-        <p className="text-gray-500 text-lg mb-4">Order not found.</p>
-        <Link to="/orders" className="text-brand-pink font-semibold hover:underline">
+      <div className="max-w-4xl mx-auto px-6 py-24 text-center">
+        <p className="font-display text-lg text-brand-deep/60 mb-4">Order not found.</p>
+        <Link to="/orders" className="text-brand-pink font-ui text-sm font-medium hover:underline">
           Back to My Orders
         </Link>
       </div>
@@ -85,9 +83,9 @@ const fromSeller = location.state?.from === 'seller';
 
   if (error || !order) {
     return (
-      <div className="max-w-4xl mx-auto px-6 py-20 text-center">
-        <p className="text-red-500 mb-4">{error}</p>
-        <Link to="/orders" className="text-brand-pink font-semibold hover:underline">
+      <div className="max-w-4xl mx-auto px-6 py-24 text-center">
+        <p className="text-red-500 font-ui text-sm mb-4">{error}</p>
+        <Link to="/orders" className="text-brand-pink font-ui text-sm font-medium hover:underline">
           Back to My Orders
         </Link>
       </div>
@@ -95,19 +93,19 @@ const fromSeller = location.state?.from === 'seller';
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10">
+    <div className="max-w-4xl mx-auto px-6 py-12">
       {justPlaced && (
-        <div className="bg-green-50 text-green-700 text-sm rounded-lg px-4 py-3 mb-6">
+        <div className="border border-green-200 bg-green-50 text-green-700 text-[13px] font-ui rounded-lg px-4 py-3 mb-6">
           Your order was placed successfully!
         </div>
       )}
 
-      <div className="flex items-center justify-between flex-wrap gap-3 mb-8">
+      <div className="flex items-center justify-between flex-wrap gap-3 mb-10">
         <div>
-          <h1 className="font-display font-[800] text-3xl text-brand-deep">
+          <h1 className="font-display text-3xl text-brand-deep">
             Order #{order.id}
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-[13px] font-ui text-brand-deep/50 mt-1">
             Placed on{' '}
             {new Date(order.createdAt).toLocaleDateString(undefined, {
               year: 'numeric', month: 'long', day: 'numeric',
@@ -118,14 +116,14 @@ const fromSeller = location.state?.from === 'seller';
       </div>
 
       <div className="grid md:grid-cols-3 gap-10">
-        <div className="md:col-span-2 bg-white rounded-2xl shadow-sm px-6 divide-y divide-gray-100">
+        <div className="md:col-span-2 bg-white rounded-xl border border-brand-deep/8 px-6 divide-y divide-brand-deep/8">
           {order.items.map((item, i) => (
             <div key={i} className="flex items-center gap-4 py-5">
-              <div className="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden shrink-0">
+              <div className="w-16 h-16 bg-brand-ivory rounded-lg overflow-hidden shrink-0 border border-brand-deep/8">
                 {item.productImage ? (
                   <img src={item.productImage} alt={item.productTitle} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">
+                  <div className="w-full h-full flex items-center justify-center text-brand-deep/25 text-xs font-ui">
                     No image
                   </div>
                 )}
@@ -134,16 +132,16 @@ const fromSeller = location.state?.from === 'seller';
               <div className="flex-1 min-w-0">
                 <Link
                   to={`/products/${item.productId}`}
-                  className="font-medium text-gray-800 hover:text-brand-pink transition-colors truncate block"
+                  className="font-display text-[15px] text-brand-deep hover:text-brand-pink transition-colors truncate block"
                 >
                   {item.productTitle}
                 </Link>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-[13px] font-ui text-brand-deep/50 mt-1">
                   ₹{item.priceAtPurchase} × {item.quantity}
                 </p>
               </div>
 
-              <div className="font-[700] text-brand-deep shrink-0">
+              <div className="font-display text-[16px] text-brand-deep shrink-0">
                 ₹{item.lineTotal}
               </div>
             </div>
@@ -151,18 +149,18 @@ const fromSeller = location.state?.from === 'seller';
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white rounded-2xl shadow-sm p-6 h-fit space-y-4">
+          <div className="bg-white rounded-xl border border-brand-deep/8 p-6 h-fit space-y-4 font-ui">
             <div>
-              <h2 className="font-semibold text-gray-800 mb-2">Payment</h2>
-              <p className="text-sm text-gray-600">
-                Method: <span className="font-medium">{order.paymentMethod}</span>
+              <h2 className="font-display text-[15px] text-brand-deep mb-2">Payment</h2>
+              <p className="text-[13px] text-brand-deep/60">
+                Method: <span className="font-medium text-brand-deep/80">{order.paymentMethod}</span>
               </p>
-              <p className="text-sm text-gray-600">
-                Status: <span className="font-medium">{order.paymentStatus}</span>
+              <p className="text-[13px] text-brand-deep/60">
+                Status: <span className="font-medium text-brand-deep/80">{order.paymentStatus}</span>
               </p>
             </div>
 
-            <div className="border-t border-gray-100 pt-4 flex justify-between font-[700] text-brand-deep">
+            <div className="border-t border-brand-deep/8 pt-4 flex justify-between font-display text-lg text-brand-deep">
               <span>Total</span>
               <span>₹{order.totalAmount}</span>
             </div>
@@ -175,11 +173,11 @@ const fromSeller = location.state?.from === 'seller';
       </div>
 
       <Link
-  to={fromSeller ? '/seller/orders' : '/orders'}
-  className="inline-block mt-8 text-sm text-brand-pink font-semibold hover:underline"
->
-  ← {fromSeller ? 'Back to Customer Orders' : 'Back to My Orders'}
-</Link>
+        to={fromSeller ? '/seller/orders' : '/orders'}
+        className="inline-block mt-8 text-[13px] font-ui text-brand-pink font-medium hover:underline"
+      >
+        ← {fromSeller ? 'Back to Customer Orders' : 'Back to My Orders'}
+      </Link>
     </div>
   );
 }
