@@ -6,13 +6,13 @@ export default function CartItemRow({ item, onQuantityChange, onRemove, isUpdati
   const hasDiscount = item.discountPercent > 0;
 
   return (
-    <div className="flex items-center gap-4 py-6 border-b border-brand-deep/8 last:border-0">
+    <div className="flex items-center gap-4 py-5 border-b border-gray-100 last:border-0 transition-transform duration-200 hover:scale-[1.01]">
       <Link to={`/products/${item.productId}`} className="shrink-0">
-        <div className="w-20 h-20 bg-brand-ivory rounded-lg overflow-hidden border border-brand-deep/8">
+        <div className="w-24 h-24 bg-gray-100 rounded-xl overflow-hidden transition-transform duration-300 hover:scale-105">
           {item.productImage ? (
             <img src={item.productImage} alt={item.productTitle} className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-brand-deep/25 text-xs font-ui">
+            <div className="w-full h-full flex items-center justify-center text-gray-300 text-sm">
               No image
             </div>
           )}
@@ -22,18 +22,18 @@ export default function CartItemRow({ item, onQuantityChange, onRemove, isUpdati
       <div className="flex-1 min-w-0">
         <Link
           to={`/products/${item.productId}`}
-          className="font-display text-[15px] text-brand-deep hover:text-brand-pink transition-colors truncate block"
+          className="font-medium text-gray-800 text-lg hover:text-brand-pink transition-colors truncate block"
         >
           {item.productTitle}
         </Link>
-        <div className="flex items-center gap-2 mt-1 font-ui">
-          <p className="text-[13px] text-brand-deep/60">₹{item.unitPrice}</p>
+        <div className="flex items-center gap-2 mt-1">
+          <p className="text-base text-gray-500">₹{item.unitPrice}</p>
           {hasDiscount && (
-            <p className="text-[12px] text-brand-deep/30 line-through">₹{item.originalPrice}</p>
+            <p className="text-sm text-gray-400 line-through">₹{item.originalPrice}</p>
           )}
         </div>
         {item.availableStock < item.quantity && (
-          <p className="text-[12px] font-ui text-brand-pink mt-1">
+          <p className="text-sm text-red-500 mt-1">
             Only {item.availableStock} left in stock
           </p>
         )}
@@ -45,7 +45,7 @@ export default function CartItemRow({ item, onQuantityChange, onRemove, isUpdati
         max={item.availableStock}
       />
 
-      <div className="w-24 text-right font-display text-[16px] text-brand-deep">
+      <div className="w-24 text-right font-[700] text-lg text-brand-deep">
         ₹{item.subtotal}
       </div>
 
@@ -53,10 +53,10 @@ export default function CartItemRow({ item, onQuantityChange, onRemove, isUpdati
         onClick={() => onRemove(item.id)}
         disabled={isUpdating}
         aria-label="Remove item"
-        className="text-brand-deep/30 hover:text-brand-pink transition-colors disabled:opacity-40 shrink-0"
+        className="press text-gray-400 hover:text-red-500 hover:scale-125 transition-all duration-200 disabled:opacity-40 shrink-0"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
         </svg>
       </button>
     </div>
