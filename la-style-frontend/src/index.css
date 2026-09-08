@@ -96,10 +96,24 @@ body,
   animation: heart-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* ---- Skeleton shimmer (loading states) ---- */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f1ede5 25%, #f8f5ef 37%, #f1ede5 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .hover-pop, .press, .animate-pop-in, .hover\:animate-wiggle:hover, .animate-heart-pop {
+  .hover-pop, .press, .animate-pop-in, .hover\:animate-wiggle:hover, .animate-heart-pop, .skeleton-shimmer {
     animation: none !important;
     transition: none !important;
     transform: none !important;
+  }
+  .skeleton-shimmer {
+    background: #f1ede5;
   }
 }

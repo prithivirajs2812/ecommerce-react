@@ -1,12 +1,21 @@
 // src/components/cart/CartItemRow.jsx
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import QuantitySelector from '../product/QuantitySelector';
+import { listItem } from '../../utils/motionVariants';
 
 export default function CartItemRow({ item, onQuantityChange, onRemove, isUpdating }) {
   const hasDiscount = item.discountPercent > 0;
 
   return (
-    <div className="flex items-center gap-4 py-5 border-b border-gray-100 last:border-0 transition-transform duration-200 hover:scale-[1.01]">
+    <motion.div
+      layout
+      variants={listItem}
+      initial="hidden"
+      animate="show"
+      exit="exit"
+      className="flex items-center gap-4 py-5 border-b border-gray-100 last:border-0"
+    >
       <Link to={`/products/${item.productId}`} className="shrink-0">
         <div className="w-24 h-24 bg-gray-100 rounded-xl overflow-hidden transition-transform duration-300 hover:scale-105">
           {item.productImage ? (
@@ -45,9 +54,15 @@ export default function CartItemRow({ item, onQuantityChange, onRemove, isUpdati
         max={item.availableStock}
       />
 
-      <div className="w-24 text-right font-[700] text-lg text-brand-deep">
+      <motion.div
+        key={item.subtotal}
+        initial={{ scale: 1.15, color: '#EC1E63' }}
+        animate={{ scale: 1, color: '#1E0B36' }}
+        transition={{ duration: 0.3 }}
+        className="w-24 text-right font-[700] text-lg"
+      >
         ₹{item.subtotal}
-      </div>
+      </motion.div>
 
       <button
         onClick={() => onRemove(item.id)}
@@ -59,6 +74,6 @@ export default function CartItemRow({ item, onQuantityChange, onRemove, isUpdati
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
         </svg>
       </button>
-    </div>
+    </motion.div>
   );
 }

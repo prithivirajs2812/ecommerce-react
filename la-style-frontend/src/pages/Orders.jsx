@@ -5,6 +5,7 @@ import { getMyOrders } from '../api/orderApi';
 import useAuthStore from '../store/useAuthStore';
 import OrderStatusBadge from '../components/order/OrderStatusBadge';
 import Pagination from '../components/product/Pagination';
+import Skeleton from '../components/common/Skeleton';
 
 function PageBackground({ children }) {
   return (
@@ -83,7 +84,7 @@ export default function Orders() {
         {loading ? (
           <div className="space-y-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="animate-pulse bg-gray-100 rounded-2xl h-28" />
+              <Skeleton key={i} className="h-28 rounded-2xl" />
             ))}
           </div>
         ) : orders.length === 0 ? (

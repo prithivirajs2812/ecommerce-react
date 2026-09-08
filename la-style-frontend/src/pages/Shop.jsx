@@ -1,10 +1,13 @@
 // src/pages/Shop.jsx
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { getAllProducts, getProductsByCategory } from '../api/productApi';
 import { getAllCategories } from '../api/categoryApi';
 import ProductCard from '../components/product/ProductCard';
 import Pagination from '../components/product/Pagination';
+import { ProductCardSkeleton } from '../components/common/Skeleton';
+import { gridContainer } from '../utils/motionVariants';
 
 function ProductGrid({ selectedCategory, page, onPageChange }) {
   const [products, setProducts] = useState([]);
@@ -38,7 +41,7 @@ function ProductGrid({ selectedCategory, page, onPageChange }) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="animate-pulse bg-brand-deep/5 rounded-xl aspect-[3/4]" />
+          <ProductCardSkeleton key={i} />
         ))}
       </div>
     );
@@ -54,11 +57,16 @@ function ProductGrid({ selectedCategory, page, onPageChange }) {
 
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <motion.div
+        variants={gridContainer}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+      >
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
-      </div>
+      </motion.div>
       <Pagination currentPage={page} totalPages={totalPages} onPageChange={onPageChange} />
     </>
   );
@@ -92,8 +100,6 @@ export default function Shop() {
   };
 
   return (
-    // Quiet warm ivory — keeps product photography as the focal point
-    // instead of competing with a busy gradient behind the grid.
     <div className="min-h-screen bg-brand-cream">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <p className="font-ui text-[20px] tracking-[0.1em] text-brand-purple mb-2 font-bold">Shop the collection</p>

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getWishlist, removeFromWishlist } from '../api/wishlistApi';
 import useAuthStore from '../store/useAuthStore';
+import Skeleton from '../components/common/Skeleton';
 
 function PageBackground({ children }) {
   return (
@@ -74,8 +75,19 @@ export default function Wishlist() {
   if (loading) {
     return (
       <PageBackground>
-        <div className="max-w-5xl mx-auto px-6 py-20 text-center text-gray-400">
-          Loading your wishlist...
+        <div className="max-w-5xl mx-auto px-6 py-10">
+          <Skeleton className="h-9 w-52 mb-8" />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl shadow-sm overflow-hidden">
+                <Skeleton className="aspect-square rounded-none" />
+                <div className="p-4 space-y-2">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/3" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </PageBackground>
     );

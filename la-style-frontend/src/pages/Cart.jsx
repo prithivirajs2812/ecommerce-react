@@ -1,9 +1,11 @@
 // src/pages/Cart.jsx
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { getCart, updateCartItem, removeCartItem, clearCart } from '../api/cartApi';
 import useAuthStore from '../store/useAuthStore';
 import CartItemRow from '../components/cart/CartItemRow';
+import Skeleton from '../components/common/Skeleton';
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -87,8 +89,22 @@ export default function Cart() {
   if (loading) {
     return (
       <div className="min-h-screen bg-brand-cream">
-        <div className="max-w-5xl mx-auto px-6 py-20 text-center text-gray-400 text-lg">
-          Loading your cart...
+        <div className="max-w-5xl mx-auto px-6 py-10">
+          <Skeleton className="h-10 w-48 mb-8" />
+          <div className="grid md:grid-cols-3 gap-10">
+            <div className="md:col-span-2 bg-white rounded-2xl shadow-sm p-6 space-y-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-4">
+                  <Skeleton className="w-24 h-24 shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-5 w-2/3" />
+                    <Skeleton className="h-4 w-1/3" />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <Skeleton className="h-56" />
+          </div>
         </div>
       </div>
     );
@@ -135,15 +151,17 @@ export default function Cart() {
       ) : (
         <div className="grid md:grid-cols-3 gap-10">
           <div className="md:col-span-2 bg-white rounded-2xl shadow-sm px-6">
-            {cart.items.map((item) => (
-              <CartItemRow
-                key={item.id}
-                item={item}
-                onQuantityChange={handleQuantityChange}
-                onRemove={handleRemove}
-                isUpdating={updatingItemId === item.id}
-              />
-            ))}
+            <AnimatePresence initial={false}>
+              {cart.items.map((item) => (
+                <CartItemRow
+                  key={item.id}
+                  item={item}
+                  onQuantityChange={handleQuantityChange}
+                  onRemove={handleRemove}
+                  isUpdating={updatingItemId === item.id}
+                />
+              ))}
+            </AnimatePresence>
 
             <div className="py-4">
               <button

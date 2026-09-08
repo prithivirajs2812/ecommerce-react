@@ -1,8 +1,11 @@
 // src/pages/Deals.jsx
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { getDeals } from '../api/productApi';
 import ProductCard from '../components/product/ProductCard';
 import Pagination from '../components/product/Pagination';
+import { ProductCardSkeleton } from '../components/common/Skeleton';
+import { gridContainer } from '../utils/motionVariants';
 
 export default function Deals() {
   const [products, setProducts] = useState([]);
@@ -52,18 +55,23 @@ export default function Deals() {
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="animate-pulse bg-gray-100 rounded-2xl aspect-[3/4]" />
+              <ProductCardSkeleton key={i} />
             ))}
           </div>
         ) : products.length === 0 ? (
           <p className="text-gray-500 text-center py-20">No active deals right now — check back soon!</p>
         ) : (
           <>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <motion.div
+              variants={gridContainer}
+              initial="hidden"
+              animate="show"
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            >
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
-            </div>
+            </motion.div>
             <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
           </>
         )}

@@ -1,9 +1,12 @@
 // src/pages/SearchResults.jsx
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { searchProducts } from '../api/productApi';
 import ProductCard from '../components/product/ProductCard';
 import Pagination from '../components/product/Pagination';
+import { ProductCardSkeleton } from '../components/common/Skeleton';
+import { gridContainer } from '../utils/motionVariants';
 
 export default function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -65,18 +68,23 @@ export default function SearchResults() {
         ) : loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="animate-pulse bg-gray-100 rounded-2xl aspect-[3/4]" />
+              <ProductCardSkeleton key={i} />
             ))}
           </div>
         ) : products.length === 0 ? (
           <p className="text-gray-500 mt-8">No products found for "{query}".</p>
         ) : (
           <>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+            <motion.div
+              variants={gridContainer}
+              initial="hidden"
+              animate="show"
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8"
+            >
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
-            </div>
+            </motion.div>
             <Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} />
           </>
         )}

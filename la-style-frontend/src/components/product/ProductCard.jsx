@@ -1,18 +1,31 @@
 // src/components/product/ProductCard.jsx
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { gridItem } from '../../utils/motionVariants';
+
+const MotionLink = motion.create(Link);
 
 export default function ProductCard({ product }) {
   const hasDiscount = product.discountPercent > 0;
 
   return (
-    <Link
+    <MotionLink
       to={`/products/${product.id}`}
-      className="hover-pop group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300 overflow-hidden block relative"
+      variants={gridItem}
+      whileHover={{ y: -6, scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+      className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300 overflow-hidden block relative"
     >
       {hasDiscount && (
-        <span className="animate-pop-in absolute top-3 left-3 z-10 bg-brand-pink text-white text-sm font-bold px-3 py-1.5 rounded-full shadow-md">
+        <motion.span
+          initial={{ scale: 0, rotate: -8 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 15, delay: 0.15 }}
+          className="absolute top-3 left-3 z-10 bg-brand-pink text-white text-sm font-bold px-3 py-1.5 rounded-full shadow-md"
+        >
           {product.discountPercent}% OFF
-        </span>
+        </motion.span>
       )}
 
       <div className="aspect-square bg-gray-100 overflow-hidden">
@@ -48,6 +61,6 @@ export default function ProductCard({ product }) {
           )}
         </div>
       </div>
-    </Link>
+    </MotionLink>
   );
 }

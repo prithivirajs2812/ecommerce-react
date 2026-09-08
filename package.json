@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "zod": "^4.5.4"
+    "zod": "^4.5.4",
+    "framer-motion": "^11.11.17"
   }
 }
