@@ -109,15 +109,17 @@ export default function Checkout() {
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-6 py-20 text-center text-gray-400 text-lg">
-        Loading checkout...
+      <div className="min-h-screen bg-brand-cream">
+        <div className="max-w-4xl mx-auto px-6 py-20 text-center text-gray-400 text-lg">
+          Loading checkout...
+        </div>
       </div>
     );
   }
 
   if (!cart) {
     return (
-      <div className="max-w-4xl mx-auto px-6 py-20 text-center">
+      <div className="min-h-screen bg-brand-cream max-w-4xl mx-auto px-6 py-20 text-center">
         <p className="text-red-500 text-lg mb-4">{error}</p>
         <Link to="/cart" className="text-brand-pink font-semibold hover:underline">
           Back to Cart
@@ -127,6 +129,8 @@ export default function Checkout() {
   }
 
   return (
+    // Flat — no gradient. Conversion flow, keep it distraction-free.
+    <div className="min-h-screen bg-brand-cream">
     <div className="max-w-4xl mx-auto px-6 py-10">
       <h1 className="font-display font-[800] text-4xl text-brand-deep mb-8">Checkout</h1>
 
@@ -234,6 +238,7 @@ export default function Checkout() {
           </button>
         </div>
       </div>
+    </div>
     </div>
   );
 }

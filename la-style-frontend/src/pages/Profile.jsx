@@ -4,6 +4,15 @@ import { useNavigate, Link } from 'react-router-dom';
 import { getProfile, updateProfile, changePassword } from '../api/userApi';
 import useAuthStore from '../store/useAuthStore';
 
+function PageBackground({ children }) {
+  return (
+    <div className="min-h-screen bg-brand-cream relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(50%_40%_at_0%_0%,_rgba(245,197,66,0.08)_0%,_transparent_70%)] pointer-events-none" />
+      <div className="relative">{children}</div>
+    </div>
+  );
+}
+
 export default function Profile() {
   const navigate = useNavigate();
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -48,39 +57,45 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto px-6 py-20 text-center text-gray-400">
-        Loading your profile...
-      </div>
+      <PageBackground>
+        <div className="max-w-5xl mx-auto px-6 py-20 text-center text-gray-400">
+          Loading your profile...
+        </div>
+      </PageBackground>
     );
   }
 
   if (loadError || !profile) {
     return (
-      <div className="max-w-5xl mx-auto px-6 py-20 text-center">
-        <p className="text-red-500 mb-4">{loadError}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="text-brand-pink font-semibold hover:underline"
-        >
-          Try again
-        </button>
-      </div>
+      <PageBackground>
+        <div className="max-w-5xl mx-auto px-6 py-20 text-center">
+          <p className="text-red-500 mb-4">{loadError}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="text-brand-pink font-semibold hover:underline"
+          >
+            Try again
+          </button>
+        </div>
+      </PageBackground>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-10">
-      <h1 className="font-display font-[800] text-3xl text-brand-deep mb-8">My Profile</h1>
+    <PageBackground>
+      <div className="max-w-5xl mx-auto px-6 py-10">
+        <h1 className="font-display font-[800] text-3xl text-brand-deep mb-8">My Profile</h1>
 
-      <div className="grid md:grid-cols-2 gap-4 items-start">
-        <ProfileDetailsForm profile={profile} onSaved={setProfile} />
+        <div className="grid md:grid-cols-2 gap-4 items-start">
+          <ProfileDetailsForm profile={profile} onSaved={setProfile} />
 
-        <div className="space-y-6">
-          <SellerStatusSection isSeller={profile.seller} />
-          <PasswordChangeForm />
+          <div className="space-y-6">
+            <SellerStatusSection isSeller={profile.seller} />
+            <PasswordChangeForm />
+          </div>
         </div>
       </div>
-    </div>
+    </PageBackground>
   );
 }
 

@@ -23,7 +23,9 @@ function App() {
   }
 
   return (
-    <div className='h-100% w-100% bg-[radial-gradient(125%_125%_at_50%_90%,_#fff_20%,_#f8aff6_100%)]'>
+    // Plain, quiet fallback — each page/layout below owns its own background.
+    // Home keeps the bold gradient; everything else gets something calmer.
+    <div className="h-100% w-100% bg-brand-cream">
       <BrowserRouter>
         <Navbar />
         <Routes>

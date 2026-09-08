@@ -92,51 +92,55 @@ export default function Shop() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      <p className="font-ui text-[20px] tracking-[0.1em] text-brand-purple mb-2 font-bold">Shop the collection</p>
-      <h1 className="font-display text-3xl text-brand-deep mb-10">All Products</h1>
+    // Quiet warm ivory — keeps product photography as the focal point
+    // instead of competing with a busy gradient behind the grid.
+    <div className="min-h-screen bg-brand-cream">
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <p className="font-ui text-[20px] tracking-[0.1em] text-brand-purple mb-2 font-bold">Shop the collection</p>
+        <h1 className="font-display text-3xl text-brand-deep mb-10">All Products</h1>
 
-      <div className="flex flex-col md:flex-row gap-10">
-        <aside className="md:w-52 shrink-0">
-          <h2 className="font-ui text-[11px] tracking-[0.08em] text-brand-deep/50 mb-4">CATEGORY</h2>
-          <ul className="space-y-1 text-sm font-ui border-l border-brand-deep/10">
-            <li>
-              <button
-                onClick={() => handleCategorySelect(null)}
-                className={`text-left w-full pl-4 py-1.5 border-l -ml-px transition-colors ${
-                  !selectedCategory
-                    ? 'border-brand-gold text-brand-deep font-medium'
-                    : 'border-transparent text-brand-deep/55 hover:text-brand-deep'
-                }`}
-              >
-                All Products
-              </button>
-            </li>
-            {categories.map((cat) => (
-              <li key={cat.id}>
+        <div className="flex flex-col md:flex-row gap-10">
+          <aside className="md:w-52 shrink-0">
+            <h2 className="font-ui text-[11px] tracking-[0.08em] text-brand-deep/50 mb-4">CATEGORY</h2>
+            <ul className="space-y-1 text-sm font-ui border-l border-brand-deep/10">
+              <li>
                 <button
-                  onClick={() => handleCategorySelect(cat.id)}
+                  onClick={() => handleCategorySelect(null)}
                   className={`text-left w-full pl-4 py-1.5 border-l -ml-px transition-colors ${
-                    selectedCategory === String(cat.id)
+                    !selectedCategory
                       ? 'border-brand-gold text-brand-deep font-medium'
                       : 'border-transparent text-brand-deep/55 hover:text-brand-deep'
                   }`}
                 >
-                  {cat.name}
+                  All Products
                 </button>
               </li>
-            ))}
-          </ul>
-        </aside>
+              {categories.map((cat) => (
+                <li key={cat.id}>
+                  <button
+                    onClick={() => handleCategorySelect(cat.id)}
+                    className={`text-left w-full pl-4 py-1.5 border-l -ml-px transition-colors ${
+                      selectedCategory === String(cat.id)
+                        ? 'border-brand-gold text-brand-deep font-medium'
+                        : 'border-transparent text-brand-deep/55 hover:text-brand-deep'
+                    }`}
+                  >
+                    {cat.name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </aside>
 
-        <main className="flex-1">
-          <ProductGrid
-            key={`${selectedCategory || 'all'}-${page}`}
-            selectedCategory={selectedCategory}
-            page={page}
-            onPageChange={handlePageChange}
-          />
-        </main>
+          <main className="flex-1">
+            <ProductGrid
+              key={`${selectedCategory || 'all'}-${page}`}
+              selectedCategory={selectedCategory}
+              page={page}
+              onPageChange={handlePageChange}
+            />
+          </main>
+        </div>
       </div>
     </div>
   );

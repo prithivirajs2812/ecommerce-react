@@ -5,6 +5,10 @@ import { getSellerOrders } from '../api/orderApi';
 import OrderStatusBadge from '../components/order/OrderStatusBadge';
 import Pagination from '../components/product/Pagination';
 
+function PageBackground({ children }) {
+  return <div className="min-h-screen bg-[#F5F3EE]">{children}</div>;
+}
+
 export default function SellerOrders() {
   const [orders, setOrders] = useState([]);
   const [page, setPage] = useState(0);
@@ -40,61 +44,65 @@ export default function SellerOrders() {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto px-6 py-20 text-center text-gray-400">
-        Loading orders...
-      </div>
+      <PageBackground>
+        <div className="max-w-5xl mx-auto px-6 py-20 text-center text-gray-400">
+          Loading orders...
+        </div>
+      </PageBackground>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-10">
-      <h1 className="font-display font-[800] text-3xl text-brand-deep mb-8">Customer Orders</h1>
+    <PageBackground>
+      <div className="max-w-5xl mx-auto px-6 py-10">
+        <h1 className="font-display font-[800] text-3xl text-brand-deep mb-8">Customer Orders</h1>
 
-      {error && (
-        <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3 mb-6">
-          {error}
-        </div>
-      )}
-
-      {orders.length === 0 ? (
-        <p className="text-gray-500 text-center py-20">
-          No orders yet for your products.
-        </p>
-      ) : (
-        <>
-          <div className="space-y-4">
-            {orders.map((order) => (
-              <Link
-                key={order.id}
-                to={`/orders/${order.id}`}
-                state={{ from: 'seller' }}
-                className="block bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow p-6"
-              >
-                <div className="flex items-center justify-between flex-wrap gap-3">
-                  <div>
-                    <p className="font-semibold text-gray-800">Order #{order.id}</p>
-                    <p className="text-sm text-gray-500 mt-1">
-                      {new Date(order.createdAt).toLocaleDateString(undefined, {
-                        year: 'numeric', month: 'long', day: 'numeric',
-                      })}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm text-gray-500">
-                      {order.items?.length || 0} item{order.items?.length === 1 ? '' : 's'}
-                    </span>
-                    <span className="font-[700] text-brand-deep">₹{order.sellerSubtotal}</span>
-                    <OrderStatusBadge status={order.status} />
-                  </div>
-                </div>
-              </Link>
-            ))}
+        {error && (
+          <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3 mb-6">
+            {error}
           </div>
+        )}
 
-          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
-        </>
-      )}
-    </div>
+        {orders.length === 0 ? (
+          <p className="text-gray-500 text-center py-20">
+            No orders yet for your products.
+          </p>
+        ) : (
+          <>
+            <div className="space-y-4">
+              {orders.map((order) => (
+                <Link
+                  key={order.id}
+                  to={`/orders/${order.id}`}
+                  state={{ from: 'seller' }}
+                  className="block bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow p-6"
+                >
+                  <div className="flex items-center justify-between flex-wrap gap-3">
+                    <div>
+                      <p className="font-semibold text-gray-800">Order #{order.id}</p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {new Date(order.createdAt).toLocaleDateString(undefined, {
+                          year: 'numeric', month: 'long', day: 'numeric',
+                        })}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <span className="text-sm text-gray-500">
+                        {order.items?.length || 0} item{order.items?.length === 1 ? '' : 's'}
+                      </span>
+                      <span className="font-[700] text-brand-deep">₹{order.sellerSubtotal}</span>
+                      <OrderStatusBadge status={order.status} />
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+          </>
+        )}
+      </div>
+    </PageBackground>
   );
 }

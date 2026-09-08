@@ -5,6 +5,10 @@ import { getAllCategories } from '../api/categoryApi';
 import ProductForm from '../components/seller/ProductForm';
 import Pagination from '../components/product/Pagination';
 
+function PageBackground({ children }) {
+  return <div className="min-h-screen bg-[#F5F3EE]">{children}</div>;
+}
+
 export default function MyProducts() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -92,109 +96,113 @@ export default function MyProducts() {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto px-6 py-20 text-center text-gray-400">
-        Loading your products...
-      </div>
+      <PageBackground>
+        <div className="max-w-6xl mx-auto px-6 py-20 text-center text-gray-400">
+          Loading your products...
+        </div>
+      </PageBackground>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-10">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="font-display font-[800] text-3xl text-brand-deep">My Products</h1>
-        {!showForm && (
-          <button
-            onClick={handleCreate}
-            className="bg-brand-pink hover:bg-pink-600 transition-colors text-white font-semibold px-5 py-2.5 rounded-lg text-sm"
-          >
-            + Add Product
-          </button>
+    <PageBackground>
+      <div className="max-w-6xl mx-auto px-6 py-10">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="font-display font-[800] text-3xl text-brand-deep">My Products</h1>
+          {!showForm && (
+            <button
+              onClick={handleCreate}
+              className="bg-brand-pink hover:bg-pink-600 transition-colors text-white font-semibold px-5 py-2.5 rounded-lg text-sm"
+            >
+              + Add Product
+            </button>
+          )}
+        </div>
+
+        {error && (
+          <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3 mb-6">
+            {error}
+          </div>
+        )}
+
+        {showForm && (
+          <div className="mb-8">
+            <ProductForm
+              initialValue={editingProduct}
+              categories={categories}
+              submitting={submitting}
+              onSubmit={handleSubmit}
+              onCancel={() => {
+                setShowForm(false);
+                setEditingProduct(null);
+              }}
+            />
+          </div>
+        )}
+
+        {products.length === 0 ? (
+          <p className="text-gray-500 text-center py-20">
+            You haven't listed any products yet.
+          </p>
+        ) : (
+          <>
+            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-gray-400 border-b border-gray-100">
+                    <th className="py-3 px-6 font-medium">Product</th>
+                    <th className="py-3 px-6 font-medium">Category</th>
+                    <th className="py-3 px-6 font-medium text-right">Price</th>
+                    <th className="py-3 px-6 font-medium text-right">Stock</th>
+                    <th className="py-3 px-6 font-medium text-right">Discount</th>
+                    <th className="py-3 px-6 font-medium text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {products.map((product) => (
+                    <tr key={product.id}>
+                      <td className="py-3 px-6 font-medium text-gray-800">{product.title}</td>
+                      <td className="py-3 px-6 text-gray-500">{product.categoryName}</td>
+                      <td className="py-3 px-6 text-right text-gray-800">₹{product.price}</td>
+                      <td className="py-3 px-6 text-right">
+                        <span className={product.stock === 0 ? 'text-red-500 font-medium' : 'text-gray-600'}>
+                          {product.stock}
+                        </span>
+                      </td>
+                      <td className="py-3 px-6 text-right">
+                        {product.discountPercent > 0 ? (
+                          <span className="text-brand-pink font-semibold">
+                            {product.discountPercent}% OFF
+                          </span>
+                        ) : (
+                          <span className="text-gray-500">None</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-6 text-right">
+                        <button
+                          onClick={() => handleEdit(product)}
+                          className="text-brand-pink font-semibold hover:underline mr-4"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(product.id)}
+                          disabled={deletingId === product.id}
+                          className="text-gray-500 hover:text-red-500 disabled:opacity-50"
+                        >
+                          {deletingId === product.id ? 'Deleting...' : 'Delete'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+          </>
         )}
       </div>
-
-      {error && (
-        <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3 mb-6">
-          {error}
-        </div>
-      )}
-
-      {showForm && (
-        <div className="mb-8">
-          <ProductForm
-            initialValue={editingProduct}
-            categories={categories}
-            submitting={submitting}
-            onSubmit={handleSubmit}
-            onCancel={() => {
-              setShowForm(false);
-              setEditingProduct(null);
-            }}
-          />
-        </div>
-      )}
-
-      {products.length === 0 ? (
-        <p className="text-gray-500 text-center py-20">
-          You haven't listed any products yet.
-        </p>
-      ) : (
-        <>
-          <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-gray-400 border-b border-gray-100">
-                  <th className="py-3 px-6 font-medium">Product</th>
-                  <th className="py-3 px-6 font-medium">Category</th>
-                  <th className="py-3 px-6 font-medium text-right">Price</th>
-                  <th className="py-3 px-6 font-medium text-right">Stock</th>
-                  <th className="py-3 px-6 font-medium text-right">Discount</th>
-                  <th className="py-3 px-6 font-medium text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {products.map((product) => (
-                  <tr key={product.id}>
-                    <td className="py-3 px-6 font-medium text-gray-800">{product.title}</td>
-                    <td className="py-3 px-6 text-gray-500">{product.categoryName}</td>
-                    <td className="py-3 px-6 text-right text-gray-800">₹{product.price}</td>
-                    <td className="py-3 px-6 text-right">
-                      <span className={product.stock === 0 ? 'text-red-500 font-medium' : 'text-gray-600'}>
-                        {product.stock}
-                      </span>
-                    </td>
-                    <td className="py-3 px-6 text-right">
-                      {product.discountPercent > 0 ? (
-                        <span className="text-brand-pink font-semibold">
-                          {product.discountPercent}% OFF
-                        </span>
-                      ) : (
-                        <span className="text-gray-500">None</span>
-                      )}
-                    </td>
-                    <td className="py-3 px-6 text-right">
-                      <button
-                        onClick={() => handleEdit(product)}
-                        className="text-brand-pink font-semibold hover:underline mr-4"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(product.id)}
-                        disabled={deletingId === product.id}
-                        className="text-gray-500 hover:text-red-500 disabled:opacity-50"
-                      >
-                        {deletingId === product.id ? 'Deleting...' : 'Delete'}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
-        </>
-      )}
-    </div>
+    </PageBackground>
   );
 }

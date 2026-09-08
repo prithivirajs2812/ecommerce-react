@@ -38,34 +38,36 @@ export default function Deals() {
   }, [page]);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
-      <h1 className="font-display font-[800] text-3xl text-brand-deep mb-2">Deals</h1>
-      <p className="text-gray-500 mb-8">Discounted products, updated as sellers add new offers.</p>
+    <div className="min-h-screen bg-brand-cream">
+      <div className="max-w-7xl mx-auto px-6 py-10">
+        <h1 className="font-display font-[800] text-3xl text-brand-deep mb-2">Deals</h1>
+        <p className="text-gray-500 mb-8">Discounted products, updated as sellers add new offers.</p>
 
-      {error && (
-        <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3 mb-6">
-          {error}
-        </div>
-      )}
+        {error && (
+          <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3 mb-6">
+            {error}
+          </div>
+        )}
 
-      {loading ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="animate-pulse bg-gray-100 rounded-2xl aspect-[3/4]" />
-          ))}
-        </div>
-      ) : products.length === 0 ? (
-        <p className="text-gray-500 text-center py-20">No active deals right now — check back soon!</p>
-      ) : (
-        <>
+        {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="animate-pulse bg-gray-100 rounded-2xl aspect-[3/4]" />
             ))}
           </div>
-          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
-        </>
-      )}
+        ) : products.length === 0 ? (
+          <p className="text-gray-500 text-center py-20">No active deals right now — check back soon!</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+            <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+          </>
+        )}
+      </div>
     </div>
   );
 }

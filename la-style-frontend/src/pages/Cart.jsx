@@ -86,15 +86,17 @@ export default function Cart() {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto px-6 py-20 text-center text-gray-400 text-lg">
-        Loading your cart...
+      <div className="min-h-screen bg-brand-cream">
+        <div className="max-w-5xl mx-auto px-6 py-20 text-center text-gray-400 text-lg">
+          Loading your cart...
+        </div>
       </div>
     );
   }
 
   if (error && !cart) {
     return (
-      <div className="max-w-5xl mx-auto px-6 py-20 text-center">
+      <div className="min-h-screen bg-brand-cream max-w-5xl mx-auto px-6 py-20 text-center">
         <p className="text-red-500 text-lg mb-4">{error}</p>
         <button
           onClick={() => window.location.reload()}
@@ -109,6 +111,8 @@ export default function Cart() {
   const isEmpty = !cart || cart.items.length === 0;
 
   return (
+    // Flat — no gradient. This is a transactional flow; keep it clean.
+    <div className="min-h-screen bg-brand-cream">
     <div className="max-w-5xl mx-auto px-6 py-10">
       <h1 className="font-display font-[800] text-4xl text-brand-deep mb-8">Your Cart</h1>
 
@@ -171,6 +175,7 @@ export default function Cart() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }
