@@ -1,23 +1,30 @@
 // src/components/review/ReviewForm.jsx
 import { useState } from 'react';
 import StarRating from './StarRating';
+import { reviewSchema } from '../../schemas/reviewSchema';
+import { validateForm } from '../../utils/validateForm';
 
 export default function ReviewForm({ initialValue, onSubmit, onCancel, submitting }) {
   const [rating, setRating] = useState(initialValue?.rating || 0);
   const [comment, setComment] = useState(initialValue?.comment || '');
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    if (rating === 0) {
-      setError('Please select a star rating.');
+    const payload = { rating, comment: comment.trim() };
+    const { success, errors } = validateForm(reviewSchema, payload);
+    if (!success) {
+      setFieldErrors(errors);
+      setError(Object.values(errors)[0]);
       return;
     }
+    setFieldErrors({});
 
     try {
-      await onSubmit({ rating, comment: comment.trim() });
+      await onSubmit(payload);
     } catch (err) {
       const validationErrors = err.response?.data?.validationErrors;
       if (validationErrors) {
@@ -29,7 +36,7 @@ export default function ReviewForm({ initialValue, onSubmit, onCancel, submittin
   };
 
   return (
-    <form onSubmit={handleSubmit} className="border border-gray-200 rounded-xl p-4 space-y-3">
+    <form onSubmit={handleSubmit} className="border border-gray-200 rounded-xl p-4 space-y-3" noValidate>
       {error && (
         <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-2.5">
           {error}
@@ -39,6 +46,7 @@ export default function ReviewForm({ initialValue, onSubmit, onCancel, submittin
       <div>
         <p className="text-sm font-medium text-gray-700 mb-1">Your rating</p>
         <StarRating value={rating} onChange={setRating} size="lg" />
+        {fieldErrors.rating && <p className="text-xs text-red-500 mt-1">{fieldErrors.rating}</p>}
       </div>
 
       <div>
@@ -48,8 +56,11 @@ export default function ReviewForm({ initialValue, onSubmit, onCancel, submittin
           maxLength={1000}
           rows={3}
           placeholder="Share your thoughts about this product (optional)"
-          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink resize-none"
+          className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink resize-none ${
+            fieldErrors.comment ? 'border-red-300' : 'border-gray-300'
+          }`}
         />
+        {fieldErrors.comment && <p className="text-xs text-red-500 mt-1">{fieldErrors.comment}</p>}
       </div>
 
       <div className="flex gap-3">

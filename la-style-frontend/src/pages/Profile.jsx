@@ -3,15 +3,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { getProfile, updateProfile, changePassword } from '../api/userApi';
 import useAuthStore from '../store/useAuthStore';
-
-function PageBackground({ children }) {
-  return (
-    <div className="min-h-screen bg-brand-cream relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(50%_40%_at_0%_0%,_rgba(245,197,66,0.08)_0%,_transparent_70%)] pointer-events-none" />
-      <div className="relative">{children}</div>
-    </div>
-  );
-}
+import { profileDetailsSchema, passwordChangeSchema } from '../schemas/profileSchema';
+import { validateForm } from '../utils/validateForm';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -57,45 +50,39 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <PageBackground>
-        <div className="max-w-5xl mx-auto px-6 py-20 text-center text-gray-400">
-          Loading your profile...
-        </div>
-      </PageBackground>
+      <div className="max-w-5xl mx-auto px-6 py-20 text-center text-gray-400">
+        Loading your profile...
+      </div>
     );
   }
 
   if (loadError || !profile) {
     return (
-      <PageBackground>
-        <div className="max-w-5xl mx-auto px-6 py-20 text-center">
-          <p className="text-red-500 mb-4">{loadError}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="text-brand-pink font-semibold hover:underline"
-          >
-            Try again
-          </button>
-        </div>
-      </PageBackground>
+      <div className="max-w-5xl mx-auto px-6 py-20 text-center">
+        <p className="text-red-500 mb-4">{loadError}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="text-brand-pink font-semibold hover:underline"
+        >
+          Try again
+        </button>
+      </div>
     );
   }
 
   return (
-    <PageBackground>
-      <div className="max-w-5xl mx-auto px-6 py-10">
-        <h1 className="font-display font-[800] text-3xl text-brand-deep mb-8">My Profile</h1>
+    <div className="max-w-5xl mx-auto px-6 py-10">
+      <h1 className="font-display font-[800] text-3xl text-brand-deep mb-8">My Profile</h1>
 
-        <div className="grid md:grid-cols-2 gap-4 items-start">
-          <ProfileDetailsForm profile={profile} onSaved={setProfile} />
+      <div className="grid md:grid-cols-2 gap-4 items-start">
+        <ProfileDetailsForm profile={profile} onSaved={setProfile} />
 
-          <div className="space-y-6">
-            <SellerStatusSection isSeller={profile.seller} />
-            <PasswordChangeForm />
-          </div>
+        <div className="space-y-6">
+          <SellerStatusSection isSeller={profile.seller} />
+          <PasswordChangeForm />
         </div>
       </div>
-    </PageBackground>
+    </div>
   );
 }
 
@@ -107,10 +94,12 @@ function ProfileDetailsForm({ profile, onSaved }) {
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
   const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setFieldErrors({ ...fieldErrors, [e.target.name]: undefined });
     setSuccess(false);
   };
 
@@ -119,6 +108,15 @@ function ProfileDetailsForm({ profile, onSaved }) {
     setSaving(true);
     setError('');
     setSuccess(false);
+
+    const { success, errors } = validateForm(profileDetailsSchema, form);
+    if (!success) {
+      setFieldErrors(errors);
+      setError(Object.values(errors)[0]);
+      setSaving(false);
+      return;
+    }
+    setFieldErrors({});
 
     try {
       const res = await updateProfile(form);
@@ -151,7 +149,7 @@ function ProfileDetailsForm({ profile, onSaved }) {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">First name</label>
@@ -159,9 +157,11 @@ function ProfileDetailsForm({ profile, onSaved }) {
               name="firstName"
               value={form.firstName}
               onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink"
+              className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink ${
+                fieldErrors.firstName ? 'border-red-300' : 'border-gray-300'
+              }`}
             />
+            {fieldErrors.firstName && <p className="text-xs text-red-500 mt-1">{fieldErrors.firstName}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Last name</label>
@@ -169,9 +169,11 @@ function ProfileDetailsForm({ profile, onSaved }) {
               name="lastName"
               value={form.lastName}
               onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink"
+              className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink ${
+                fieldErrors.lastName ? 'border-red-300' : 'border-gray-300'
+              }`}
             />
+            {fieldErrors.lastName && <p className="text-xs text-red-500 mt-1">{fieldErrors.lastName}</p>}
           </div>
         </div>
 
@@ -192,8 +194,11 @@ function ProfileDetailsForm({ profile, onSaved }) {
             value={form.phone}
             onChange={handleChange}
             placeholder="10-digit phone number"
-            className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink"
+            className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink ${
+              fieldErrors.phone ? 'border-red-300' : 'border-gray-300'
+            }`}
           />
+          {fieldErrors.phone && <p className="text-xs text-red-500 mt-1">{fieldErrors.phone}</p>}
         </div>
 
         <button
@@ -254,10 +259,12 @@ function PasswordChangeForm() {
   const [form, setForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
   const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setFieldErrors({ ...fieldErrors, [e.target.name]: undefined });
     setSuccess(false);
   };
 
@@ -266,10 +273,13 @@ function PasswordChangeForm() {
     setError('');
     setSuccess(false);
 
-    if (form.newPassword !== form.confirmPassword) {
-      setError('New password and confirmation do not match.');
+    const { success, errors } = validateForm(passwordChangeSchema, form);
+    if (!success) {
+      setFieldErrors(errors);
+      setError(Object.values(errors)[0]);
       return;
     }
+    setFieldErrors({});
 
     setSaving(true);
     try {
@@ -306,7 +316,7 @@ function PasswordChangeForm() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Current password</label>
           <input
@@ -314,9 +324,11 @@ function PasswordChangeForm() {
             name="currentPassword"
             value={form.currentPassword}
             onChange={handleChange}
-            required
-            className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink"
+            className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink ${
+              fieldErrors.currentPassword ? 'border-red-300' : 'border-gray-300'
+            }`}
           />
+          {fieldErrors.currentPassword && <p className="text-xs text-red-500 mt-1">{fieldErrors.currentPassword}</p>}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">New password</label>
@@ -325,11 +337,12 @@ function PasswordChangeForm() {
             name="newPassword"
             value={form.newPassword}
             onChange={handleChange}
-            required
-            minLength={8}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink"
+            className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink ${
+              fieldErrors.newPassword ? 'border-red-300' : 'border-gray-300'
+            }`}
           />
           <p className="text-xs text-gray-400 mt-1">At least 8 characters, with at least one letter and one number.</p>
+          {fieldErrors.newPassword && <p className="text-xs text-red-500 mt-1">{fieldErrors.newPassword}</p>}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Confirm new password</label>
@@ -338,9 +351,11 @@ function PasswordChangeForm() {
             name="confirmPassword"
             value={form.confirmPassword}
             onChange={handleChange}
-            required
-            className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink"
+            className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink ${
+              fieldErrors.confirmPassword ? 'border-red-300' : 'border-gray-300'
+            }`}
           />
+          {fieldErrors.confirmPassword && <p className="text-xs text-red-500 mt-1">{fieldErrors.confirmPassword}</p>}
         </div>
 
         <button

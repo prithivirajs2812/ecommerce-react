@@ -1,5 +1,7 @@
 // src/components/admin/CouponForm.jsx
 import { useState } from 'react';
+import { couponSchema } from '../../schemas/couponSchema';
+import { validateForm } from '../../utils/validateForm';
 
 export default function CouponForm({ initialValue, onSubmit, onCancel, submitting }) {
   const [form, setForm] = useState({
@@ -8,12 +10,25 @@ export default function CouponForm({ initialValue, onSubmit, onCancel, submittin
     expiryDate: initialValue?.expiryDate ? initialValue.expiryDate.slice(0, 16) : '',
   });
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setFieldErrors({ ...fieldErrors, [e.target.name]: undefined });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    const { success, errors } = validateForm(couponSchema, form);
+    if (!success) {
+      setFieldErrors(errors);
+      setError(Object.values(errors)[0]);
+      return;
+    }
+    setFieldErrors({});
+
     try {
       await onSubmit({
         code: form.code,
@@ -31,7 +46,7 @@ export default function CouponForm({ initialValue, onSubmit, onCancel, submittin
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
+    <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-6 space-y-4" noValidate>
       {error && (
         <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3">{error}</div>
       )}
@@ -42,10 +57,12 @@ export default function CouponForm({ initialValue, onSubmit, onCancel, submittin
           name="code"
           value={form.code}
           onChange={handleChange}
-          required
           maxLength={30}
-          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink uppercase"
+          className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink uppercase ${
+            fieldErrors.code ? 'border-red-300' : 'border-gray-300'
+          }`}
         />
+        {fieldErrors.code && <p className="text-xs text-red-500 mt-1">{fieldErrors.code}</p>}
       </div>
 
       <div>
@@ -55,12 +72,14 @@ export default function CouponForm({ initialValue, onSubmit, onCancel, submittin
           name="discountPercent"
           value={form.discountPercent}
           onChange={handleChange}
-          required
           min="0.01"
           max="100"
           step="0.01"
-          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink"
+          className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink ${
+            fieldErrors.discountPercent ? 'border-red-300' : 'border-gray-300'
+          }`}
         />
+        {fieldErrors.discountPercent && <p className="text-xs text-red-500 mt-1">{fieldErrors.discountPercent}</p>}
       </div>
 
       <div>

@@ -2,6 +2,10 @@
 import { z } from 'zod';
 
 export const reviewSchema = z.object({
-  rating: z.number().int().min(1, 'Please select a star rating').max(5),
+  rating: z
+    .number({ invalid_type_error: 'Please select a star rating' })
+    .int()
+    .min(1, 'Please select a star rating')
+    .max(5),
   comment: z.string().max(1000, 'Comment must be under 1000 characters').optional().or(z.literal('')),
 });
