@@ -5,6 +5,30 @@ import { getProfile, updateProfile, changePassword } from '../api/userApi';
 import useAuthStore from '../store/useAuthStore';
 import { profileDetailsSchema, passwordChangeSchema } from '../schemas/profileSchema';
 import { validateForm } from '../utils/validateForm';
+import Skeleton from '../components/common/Skeleton';
+
+// Same wrapper for loading, error and loaded states, so the page height never
+// collapses while the profile is fetched (which is what made the footer jump
+// up to the top of the screen during the route transition).
+function PageBackground({ children }) {
+  return <div className="min-h-screen bg-brand-cream">{children}</div>;
+}
+
+// Placeholder that mirrors the real layout: heading + two columns of cards.
+function ProfileSkeleton() {
+  return (
+    <div className="max-w-5xl mx-auto px-6 py-10">
+      <Skeleton className="h-9 w-48 mb-8" />
+      <div className="grid md:grid-cols-2 gap-4 items-start">
+        <Skeleton className="h-[26rem] rounded-2xl" />
+        <div className="space-y-6">
+          <Skeleton className="h-36 rounded-2xl" />
+          <Skeleton className="h-[26rem] rounded-2xl" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -50,39 +74,43 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto px-6 py-20 text-center text-gray-400">
-        Loading your profile...
-      </div>
+      <PageBackground>
+        <ProfileSkeleton />
+      </PageBackground>
     );
   }
 
   if (loadError || !profile) {
     return (
-      <div className="max-w-5xl mx-auto px-6 py-20 text-center">
-        <p className="text-red-500 mb-4">{loadError}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="text-brand-pink font-semibold hover:underline"
-        >
-          Try again
-        </button>
-      </div>
+      <PageBackground>
+        <div className="max-w-5xl mx-auto px-6 py-20 text-center">
+          <p className="text-red-500 mb-4">{loadError}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="text-brand-pink font-semibold hover:underline"
+          >
+            Try again
+          </button>
+        </div>
+      </PageBackground>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-10">
-      <h1 className="font-display font-[800] text-3xl text-brand-deep mb-8">My Profile</h1>
+    <PageBackground>
+      <div className="max-w-5xl mx-auto px-6 py-10">
+        <h1 className="font-display font-[800] text-3xl text-brand-deep mb-8">My Profile</h1>
 
-      <div className="grid md:grid-cols-2 gap-4 items-start">
-        <ProfileDetailsForm profile={profile} onSaved={setProfile} />
+        <div className="grid md:grid-cols-2 gap-4 items-start">
+          <ProfileDetailsForm profile={profile} onSaved={setProfile} />
 
-        <div className="space-y-6">
-          <SellerStatusSection isSeller={profile.seller} />
-          <PasswordChangeForm />
+          <div className="space-y-6">
+            <SellerStatusSection isSeller={profile.seller} />
+            <PasswordChangeForm />
+          </div>
         </div>
       </div>
-    </div>
+    </PageBackground>
   );
 }
 

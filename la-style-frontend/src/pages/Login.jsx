@@ -65,7 +65,7 @@ export default function Login() {
               fieldErrors.email ? 'border-red-300' : 'border-gray-300'
             }`}
           />
-          {fieldErrors.email && <p className="text-xs text-red-500 mt-1">{fieldErrors.email}</p>}
+         {fieldErrors.email && <p className="text-xs text-red-500 mt-1">{fieldErrors.email}</p>}
         </div>
 
         <div>
