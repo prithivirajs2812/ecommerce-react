@@ -24,3 +24,6 @@ export const getMyProducts = (page = 0, size = 20) =>
 
 export const getDeals = (page = 0, size = 12) =>
   axiosInstance.get(`${PRODUCT_ENDPOINTS.DEALS}?page=${page}&size=${size}`);
+
+export const getTrendingProducts = (limit = 8) =>
+  axiosInstance.get(`${PRODUCT_ENDPOINTS.TRENDING}?limit=${limit}`);

@@ -12,15 +12,6 @@ export const USER_ENDPOINTS = {
 };
 
 
-export const PRODUCT_ENDPOINTS = {
-  ALL: '/products',
-  BY_ID: (id) => `/products/${id}`,
-  BY_CATEGORY: (categoryId) => `/products/category/${categoryId}`,
-  SEARCH: '/products/search',
-  MINE: '/products/mine',
-  DEALS: '/products/deals',
-};
-
 export const CATEGORY_ENDPOINTS = {
   ALL: '/categories',
 };
@@ -97,4 +88,14 @@ export const NOTIFICATION_ENDPOINTS = {
   UNREAD_COUNT: '/notifications/unread-count',
   MARK_READ: (id) => `/notifications/${id}/read`,
   MARK_ALL_READ: '/notifications/read-all',
+};
+
+export const PRODUCT_ENDPOINTS = {
+  ALL: '/products',
+  BY_ID: (id) => `/products/${id}`,
+  BY_CATEGORY: (categoryId) => `/products/category/${categoryId}`,
+  SEARCH: '/products/search',
+  MINE: '/products/mine',
+  DEALS: '/products/deals',
+  TRENDING: '/products/trending', // new
 };
