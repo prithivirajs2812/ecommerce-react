@@ -5,13 +5,14 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { getDeals } from '../../api/productApi';
 import heroImage from '../../assets/hero.png';
 
-const AUTOPLAY_MS = 5000;
+const AUTOPLAY_MS = 10000;
 
 export default function Hero() {
   const navigate = useNavigate();
   const [deals, setDeals] = useState([]);
   const [index, setIndex] = useState(0);
 
+  // Pull the current top discounts — whatever a seller has active shows up here automatically.
   useEffect(() => {
     let ignore = false;
     getDeals(0, 5)
@@ -36,6 +37,11 @@ export default function Hero() {
 
   const slideCount = slides.length;
 
+  // Derived at render time instead of "corrected" inside an effect — deals can load
+  // after the first render and shrink/grow the list, so this keeps index safe without
+  // ever calling setState synchronously from an effect body.
+  const safeIndex = index < slideCount ? index : 0;
+
   useEffect(() => {
     if (slideCount <= 1) return;
     const timer = setInterval(() => {
@@ -44,14 +50,9 @@ export default function Hero() {
     return () => clearInterval(timer);
   }, [slideCount]);
 
-  // Deals can load after the first render — keep index in range if the list shrinks/grows.
-  useEffect(() => {
-    if (index >= slideCount) setIndex(0);
-  }, [slideCount, index]);
-
   const goTo = useCallback((i) => setIndex(i), []);
 
-  const active = slides[index] || slides[0];
+  const active = slides[safeIndex] || slides[0];
   const activeDeal = active?.type === 'deal' ? active.product : null;
   const bgImage = activeDeal?.image || heroImage;
 
@@ -144,7 +145,7 @@ export default function Hero() {
                 onClick={() => goTo(i)}
                 aria-label={`Go to slide ${i + 1}`}
                 className={`h-2 rounded-full transition-all duration-300 ${
-                  i === index ? 'w-8 bg-brand-pink' : 'w-2 bg-white/50 hover:bg-white/80'
+                  i === safeIndex ? 'w-8 bg-brand-pink' : 'w-2 bg-white/50 hover:bg-white/80'
                 }`}
               />
             ))}
