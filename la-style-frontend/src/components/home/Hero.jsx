@@ -1,5 +1,5 @@
 // src/components/home/Hero.jsx
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { getDeals } from '../../api/productApi';
@@ -9,25 +9,32 @@ const AUTOPLAY_MS = 5000;
 
 export default function Hero() {
   const navigate = useNavigate();
-  const [slides, setSlides] = useState([]);
+  const [deals, setDeals] = useState([]);
   const [index, setIndex] = useState(0);
 
-  // Pull the current top discounts — whatever a seller has active shows up here automatically.
   useEffect(() => {
     let ignore = false;
     getDeals(0, 5)
       .then((res) => {
-        if (!ignore) setSlides(res.data.content.filter((p) => p.image));
+        if (!ignore) setDeals(res.data.content.filter((p) => p.image));
       })
       .catch(() => {
-        if (!ignore) setSlides([]);
+        if (!ignore) setDeals([]);
       });
     return () => {
       ignore = true;
     };
   }, []);
 
-  const slideCount = slides.length || 1;
+  // Build the full rotation: the default brand slide first, then every active deal.
+  // With one deal this gives [default, deal] so it still alternates back and forth
+  // instead of freezing on a single slide.
+  const slides = useMemo(
+    () => [{ type: 'default' }, ...deals.map((d) => ({ type: 'deal', product: d }))],
+    [deals]
+  );
+
+  const slideCount = slides.length;
 
   useEffect(() => {
     if (slideCount <= 1) return;
@@ -37,9 +44,15 @@ export default function Hero() {
     return () => clearInterval(timer);
   }, [slideCount]);
 
+  // Deals can load after the first render — keep index in range if the list shrinks/grows.
+  useEffect(() => {
+    if (index >= slideCount) setIndex(0);
+  }, [slideCount, index]);
+
   const goTo = useCallback((i) => setIndex(i), []);
 
-  const activeDeal = slides[index];
+  const active = slides[index] || slides[0];
+  const activeDeal = active?.type === 'deal' ? active.product : null;
   const bgImage = activeDeal?.image || heroImage;
 
   return (
@@ -123,11 +136,11 @@ export default function Hero() {
           </AnimatePresence>
         </div>
 
-        {slides.length > 1 && (
+        {slideCount > 1 && (
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
             {slides.map((s, i) => (
               <button
-                key={s.id}
+                key={s.type === 'deal' ? s.product.id : 'default'}
                 onClick={() => goTo(i)}
                 aria-label={`Go to slide ${i + 1}`}
                 className={`h-2 rounded-full transition-all duration-300 ${
