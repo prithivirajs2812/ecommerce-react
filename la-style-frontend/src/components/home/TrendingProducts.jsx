@@ -14,7 +14,7 @@ export default function TrendingProducts() {
   useEffect(() => {
     let ignore = false;
 
-    getTrendingProducts(8)
+    getTrendingProducts(10)
       .then((res) => {
         if (!ignore) setProducts(res.data);
       })
@@ -30,7 +30,6 @@ export default function TrendingProducts() {
     };
   }, []);
 
-  // No orders on the platform yet — skip the section rather than showing an empty grid.
   if (!loading && products.length === 0) return null;
 
   return (
@@ -51,8 +50,8 @@ export default function TrendingProducts() {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {Array.from({ length: 8 }).map((_, i) => (
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
+          {Array.from({ length: 10 }).map((_, i) => (
             <ProductCardSkeleton key={i} />
           ))}
         </div>
@@ -61,10 +60,10 @@ export default function TrendingProducts() {
           variants={gridContainer}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-2 md:grid-cols-4 gap-6"
+          className="grid grid-cols-3 md:grid-cols-5 gap-4"
         >
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} compact />
           ))}
         </motion.div>
       )}
