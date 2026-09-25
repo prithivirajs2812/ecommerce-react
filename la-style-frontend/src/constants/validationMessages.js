@@ -42,6 +42,10 @@ export const VALIDATION_MESSAGES = Object.freeze({
   COUPON_DISCOUNT_MIN: 'Must be greater than 0',
   COUPON_DISCOUNT_MAX: `Cannot exceed ${LIMITS.COUPON_DISCOUNT_MAX}`,
 
+  // ---- Category ----
+  CATEGORY_NAME_REQUIRED: 'Category name is required',
+  CATEGORY_NAME_TOO_LONG: `Category name must be under ${LIMITS.CATEGORY_NAME_MAX} characters`,
+
   // ---- Product ----
   TITLE_REQUIRED: 'Title is required',
   TITLE_TOO_LONG: 'Title is too long',

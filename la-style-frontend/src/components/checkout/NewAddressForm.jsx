@@ -3,9 +3,14 @@ import { useState } from 'react';
 import { addressSchema } from '../../schemas/addressSchema';
 import { validateForm } from '../../utils/validateForm';
 
-export default function NewAddressForm({ onSave, onCancel, saving }) {
+export default function NewAddressForm({ initialValue, onSave, onCancel, saving }) {
   const [form, setForm] = useState({
-    line1: '', line2: '', city: '', state: '', zip: '', country: '',
+    line1: initialValue?.line1 || '',
+    line2: initialValue?.line2 || '',
+    city: initialValue?.city || '',
+    state: initialValue?.state || '',
+    zip: initialValue?.zip || '',
+    country: initialValue?.country || '',
   });
   const [fieldErrors, setFieldErrors] = useState({});
   const [error, setError] = useState('');
@@ -100,7 +105,7 @@ export default function NewAddressForm({ onSave, onCancel, saving }) {
           type="submit" disabled={saving}
           className="bg-brand-pink hover:bg-pink-600 disabled:opacity-60 transition-colors text-white text-sm font-semibold px-4 py-2 rounded-lg"
         >
-          {saving ? 'Saving...' : 'Save Address'}
+          {saving ? 'Saving...' : initialValue ? 'Update Address' : 'Save Address'}
         </button>
         <button
           type="button" onClick={onCancel}

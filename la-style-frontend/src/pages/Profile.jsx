@@ -2,10 +2,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { getProfile, updateProfile, changePassword } from '../api/userApi';
+import { getMyAddresses, createAddress, updateAddress, deleteAddress } from '../api/addressApi';
 import useAuthStore from '../store/useAuthStore';
 import { profileDetailsSchema, passwordChangeSchema } from '../schemas/profileSchema';
 import { validateForm } from '../utils/validateForm';
 import Skeleton from '../components/common/Skeleton';
+import NewAddressForm from '../components/checkout/NewAddressForm';
 
 // Same wrapper for loading, error and loaded states, so the page height never
 // collapses while the profile is fetched (which is what made the footer jump
@@ -102,7 +104,10 @@ export default function Profile() {
         <h1 className="font-display font-[800] text-3xl text-brand-deep mb-8">My Profile</h1>
 
         <div className="grid md:grid-cols-2 gap-4 items-start">
-          <ProfileDetailsForm profile={profile} onSaved={setProfile} />
+          <div className="space-y-6">
+            <ProfileDetailsForm profile={profile} onSaved={setProfile} />
+            <AddressManager />
+          </div>
 
           <div className="space-y-6">
             <SellerStatusSection isSeller={profile.seller} />
@@ -237,6 +242,155 @@ function ProfileDetailsForm({ profile, onSaved }) {
           {saving ? 'Saving...' : 'Save Changes'}
         </button>
       </form>
+    </section>
+  );
+}
+
+function AddressManager() {
+  const [addresses, setAddresses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const [showForm, setShowForm] = useState(false);
+  const [editingAddress, setEditingAddress] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function load() {
+      setLoading(true);
+      setError('');
+      try {
+        const res = await getMyAddresses();
+        if (!ignore) setAddresses(res.data);
+      } catch {
+        if (!ignore) setError('Failed to load your addresses.');
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    }
+
+    load();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const handleAdd = () => {
+    setEditingAddress(null);
+    setShowForm(true);
+  };
+
+  const handleEdit = (address) => {
+    setEditingAddress(address);
+    setShowForm(true);
+  };
+
+  const handleSave = async (data) => {
+    setSaving(true);
+    setError('');
+    try {
+      if (editingAddress) {
+        const res = await updateAddress(editingAddress.id, data);
+        setAddresses((prev) => prev.map((a) => (a.id === res.data.id ? res.data : a)));
+      } else {
+        const res = await createAddress(data);
+        setAddresses((prev) => [...prev, res.data]);
+      }
+      setShowForm(false);
+      setEditingAddress(null);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Could not save address. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (addressId) => {
+    setDeletingId(addressId);
+    setError('');
+    try {
+      await deleteAddress(addressId);
+      setAddresses((prev) => prev.filter((a) => a.id !== addressId));
+    } catch (err) {
+      setError(err.response?.data?.message || 'Could not delete address.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  return (
+    <section className="bg-white rounded-2xl shadow-sm p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-semibold text-gray-800">Saved Addresses</h2>
+        {!showForm && (
+          <button
+            onClick={handleAdd}
+            className="text-sm text-brand-pink font-semibold hover:underline"
+          >
+            + Add Address
+          </button>
+        )}
+      </div>
+
+      {error && (
+        <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3 mb-4">{error}</div>
+      )}
+
+      {showForm && (
+        <div className="mb-4">
+          <NewAddressForm
+            initialValue={editingAddress}
+            saving={saving}
+            onSave={handleSave}
+            onCancel={() => {
+              setShowForm(false);
+              setEditingAddress(null);
+            }}
+          />
+        </div>
+      )}
+
+      {loading ? (
+        <p className="text-sm text-gray-400">Loading addresses...</p>
+      ) : addresses.length === 0 && !showForm ? (
+        <p className="text-sm text-gray-500">
+          You haven't saved any addresses yet. They'll also be saved automatically at checkout.
+        </p>
+      ) : (
+        <div className="space-y-3">
+          {addresses.map((addr) => (
+            <div
+              key={addr.id}
+              className="border border-gray-200 rounded-xl p-4 flex items-start justify-between gap-4"
+            >
+              <div className="text-sm text-gray-700">
+                <p>{addr.line1}{addr.line2 ? `, ${addr.line2}` : ''}</p>
+                <p>{addr.city}, {addr.state} {addr.zip}</p>
+                <p>{addr.country}</p>
+              </div>
+              <div className="flex gap-3 shrink-0">
+                <button
+                  onClick={() => handleEdit(addr)}
+                  className="text-xs text-brand-pink font-semibold hover:underline"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(addr.id)}
+                  disabled={deletingId === addr.id}
+                  className="text-xs text-gray-500 hover:text-red-500 disabled:opacity-50"
+                >
+                  {deletingId === addr.id ? 'Removing...' : 'Delete'}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

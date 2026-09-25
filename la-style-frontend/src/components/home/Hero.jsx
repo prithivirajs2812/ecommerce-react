@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { getDeals } from '../../api/productApi';
 import heroImage from '../../assets/hero.png';
 
-const AUTOPLAY_MS = 10000;
+const AUTOPLAY_MS = 5000;
 
 export default function Hero() {
   const navigate = useNavigate();

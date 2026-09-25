@@ -14,6 +14,7 @@ export const USER_ENDPOINTS = {
 
 export const CATEGORY_ENDPOINTS = {
   ALL: '/categories',
+  BY_ID: (id) => `/categories/${id}`,
 };
 
 export const CART_ENDPOINTS = {
@@ -24,6 +25,7 @@ export const CART_ENDPOINTS = {
 
 export const ADDRESS_ENDPOINTS = {
   ALL: '/users/me/addresses',
+  BY_ID: (addressId) => `/users/me/addresses/${addressId}`,
 };
 
 // src/api/endpoints.js

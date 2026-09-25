@@ -33,7 +33,9 @@ function ProductDetail() {
   const navigate = useNavigate();
   const accessToken = useAuthStore((state) => state.accessToken);
   const user = useAuthStore((state) => state.user);
+  const roles = useAuthStore((state) => state.roles) || [];
   const isAuthenticated = !!accessToken;
+  const isAdmin = roles.includes('ROLE_ADMIN');
 
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -402,7 +404,7 @@ function ProductDetail() {
                 currentUserId={user?.userId}
                 onEdit={handleEditReview}
                 onDelete={handleDeleteReview}
-                isAdmin={false}
+                isAdmin={isAdmin}
               />
               <Pagination
                 currentPage={reviewPage}

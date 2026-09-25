@@ -36,6 +36,9 @@ export const VALIDATION_LIMITS = Object.freeze({
   COUPON_DISCOUNT_MIN: 0.01,
   COUPON_DISCOUNT_MAX: 100,
 
+  // Category
+  CATEGORY_NAME_MAX: 100,
+
   // Product
   TITLE_MAX: 200,
   DESCRIPTION_MAX: 2000,

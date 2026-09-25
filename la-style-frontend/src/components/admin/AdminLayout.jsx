@@ -6,6 +6,8 @@ const TABS = [
   { to: '/admin', label: 'Overview', end: true },
   { to: '/admin/users', label: 'Users' },
   { to: '/admin/sellers', label: 'Sellers' },
+  { to: '/admin/products', label: 'Products' },
+  { to: '/admin/categories', label: 'Categories' },
   { to: '/admin/coupons', label: 'Coupons' },
   { to: '/admin/messages', label: 'Messages' },
 ];

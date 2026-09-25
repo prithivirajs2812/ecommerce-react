@@ -16,6 +16,8 @@ import MyProducts from '../pages/MyProducts';
 import AdminOverview from '../pages/admin/AdminOverview';
 import AdminUsers from '../pages/admin/AdminUsers';
 import AdminSellers from '../pages/admin/AdminSellers';
+import AdminProducts from '../pages/admin/AdminProducts';
+import AdminCategories from '../pages/admin/AdminCategories';
 import AdminCoupons from '../pages/admin/AdminCoupons';
 import SellerOrders from '../pages/SellerOrders';
 import Deals from '../pages/Deals';
@@ -65,6 +67,14 @@ const routeConfig = [
   {
     path: '/admin/sellers',
     element: <ProtectedRoute requiredRole="ROLE_ADMIN"><AdminSellers /></ProtectedRoute>,
+  },
+  {
+    path: '/admin/products',
+    element: <ProtectedRoute requiredRole="ROLE_ADMIN"><AdminProducts /></ProtectedRoute>,
+  },
+  {
+    path: '/admin/categories',
+    element: <ProtectedRoute requiredRole="ROLE_ADMIN"><AdminCategories /></ProtectedRoute>,
   },
   {
     path: '/admin/coupons',
